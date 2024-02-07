@@ -5,4 +5,4 @@ model = YOLO("yolov8n.yaml")  # build a new model from scratch
 
 
 # Use the model
-model.train(data="custom_data.yaml", epochs=100)  
+model.train(data="custom_data.yaml", epochs=150)  

@@ -3,7 +3,7 @@ from ultralytics import YOLO
 import cv2
 
 # Path to the image
-image_path = '134.PNG'
+image_path = '35.PNG'
 
 # Load the image
 frame = cv2.imread(image_path)

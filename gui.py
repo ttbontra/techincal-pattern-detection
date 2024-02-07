@@ -11,13 +11,17 @@ from tkinter import Toplevel
 from tkinter import Canvas
 
 # Initialize YOLO model
-model_path = os.path.join('models', 'best.pt')  # Update this path
+model_path = os.path.join('models', 'best.pt')  
 model = YOLO(model_path)
 
 color_map = {
     'consolidation': (0, 255, 0),
     'bullflag': (255, 105, 180),
-    'mini bullflag': (0, 0, 255)
+    'mini bullflag': (0, 0, 255),
+    'cup and handle': (255, 255, 255),
+    'bearflag': (255, 0, 0),
+    'mini bearflag': (255, 255, 0),
+    'cloudbank': (0, 255, 255),
 }
 
 class ObjectDetectionApp(ctk.CTk):
