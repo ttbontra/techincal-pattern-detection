@@ -11,6 +11,7 @@ import os
 from tkinter import Toplevel
 from tkinter import Canvas
 
+
 # Initialize YOLO model
 model_path = os.path.join('models', 'best.pt')  
 model = YOLO(model_path)
@@ -37,11 +38,11 @@ class ObjectDetectionApp(ctk.CTk):
 
         # Main frame for streaming
         self.stream_frame = ctk.CTkFrame(self, width=800, height=600)
-        self.stream_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        self.stream_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)  # Changed side to RIGHT
 
         # Sidebar for object summary
         self.sidebar_frame = ctk.CTkFrame(self, width=200, height=600)
-        self.sidebar_frame.pack(side=tk.RIGHT, fill=tk.Y)
+        self.sidebar_frame.pack(side=tk.LEFT, fill=tk.Y)  # Changed side to LEFT
         self.sidebar_label = ctk.CTkLabel(self.sidebar_frame, text="Detected Objects:", anchor="nw", justify=tk.LEFT)
         self.sidebar_label.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
