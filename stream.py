@@ -10,6 +10,8 @@ from ultralytics import YOLO
 import os
 from tkinter import Toplevel
 from tkinter import Canvas
+import json
+
 
 
 # Initialize YOLO model
@@ -97,18 +99,36 @@ class ObjectDetectionApp(ctk.CTk):
 
             # Additionally, update the sidebar with detected object summaries
             self.update_sidebar(detected_objects)
+
+    def load_strategy_info(self, pattern_name):
+        filename = os.path.join("strategy", f"{pattern_name}.json")  # Assuming the file is named after the pattern
+        try:
+            with open(filename, 'r') as file:
+                return json.load(file)
+        except FileNotFoundError:
+            print(f"File {filename} not found.")
+            return None
     
     def update_sidebar(self, detected_objects):
-        # Count the occurrences of each detected object
-        object_counts = Counter(detected_objects)
-        
-        # Prepare the text to display in the sidebar
-        sidebar_text = "Detected Objects:\n"
-        for object_name, count in object_counts.items():
-            sidebar_text += f"{object_name}: {count}\n"
-        
-        # Update the sidebar_label with the new text
-        self.sidebar_label.configure(text=sidebar_text)
+        # This assumes detected_objects is a list of detected pattern names
+        if detected_objects:
+            # For demonstration, let's just try to load info for the first detected object
+            # You may want to adjust this logic based on your needs
+            #pattern_name = detected_objects[0]  # Example: 'consolidation'
+            strategy_info = self.load_strategy_info(detected_objects[0])
+            
+            if strategy_info:
+                # Successfully loaded strategy info, now format it for display
+                pattern_description = strategy_info.get("pattern_description", {})
+                sidebar_text = f"Pattern: {pattern_description.get('name', 'N/A')}\n"
+                sidebar_text += f"Type: {pattern_description.get('type', 'N/A')}\n"
+                # Add more fields as needed...
+
+                self.sidebar_label.configure(text=sidebar_text)
+            else:
+                self.sidebar_label.configure(text="Strategy info not found.")
+        else:
+            self.sidebar_label.configure(text="No pattern detected.")
 
 def detect_objects(model, img, color_map):
         results = model(img)[0]
