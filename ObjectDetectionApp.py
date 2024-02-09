@@ -13,38 +13,51 @@ from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import QApplication
 import torch
 from ultralytics import YOLO
+from detect_objects import detect_objects, color_map
 
 class ObjectDetectionThread(QThread):
-    changePixmap = pyqtSignal(QImage)
+    changePixmap = pyqtSignal(QImage, list)
 
-    def __init__(self, roi, *args, **kwargs):
+    def __init__(self, roi, model, color_map, *args, **kwargs):
         super(ObjectDetectionThread, self).__init__(*args, **kwargs)
         self.roi = roi
+        self.model = model
+        self.color_map = color_map
         self.running = True
-        self.sidebar = QWidget()  # Create a sidebar widget
-        self.sidebarLayout = QVBoxLayout()  # Create a layout for the sidebar
-        self.sidebar.setLayout(self.sidebarLayout)
+       
+    #def __init__(self, roi, *args, **kwargs):
+    #    super(ObjectDetectionThread, self).__init__(*args, **kwargs)
+    #    self.roi = roi
+    #    self.running = True
+    #    self.model = model
+    #    self.sidebar = QWidget()  # Create a sidebar widget
+    #    self.sidebarLayout = QVBoxLayout()  # Create a layout for the sidebar
+    #    self.sidebar.setLayout(self.sidebarLayout)
 
+    #def loadModel(self):
+    #    model_path = os.path.join('models', 'best.pt')  
+    #    model =YOLO(model_path)
+    #    return model
+        
     def run(self):
         with mss.mss() as sct:
             while self.running:
-                if self.roi:
-                    monitor = {"top": self.roi['top'], "left": self.roi['left'], "width": self.roi['width'], "height": self.roi['height']}
-                    sct_img = sct.grab(monitor)
-                    img = np.array(sct_img)
+                sct_img = sct.grab(self.roi)
+                frame = np.array(sct_img)
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGRA2BGR)
 
-                    # Simulate object detection
-                    # Replace this part with actual YOLO detection
-                    img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)  # Convert to BGR format
-                    # img, detected_objects = detect_objects(yolo_model, img)
+                # Assuming detect_objects is adjusted to fit your PyQt app and returns correct detections
+                frame, detected_objects = detect_objects(self.model, frame, color_map)
 
-                    # Convert to QImage
-                    h, w, ch = img.shape
-                    bytesPerLine = ch * w
-                    convertToQtFormat = QImage(img.data, w, h, bytesPerLine, QImage.Format_RGB888)
-                    p = convertToQtFormat.scaled(800, 600, Qt.KeepAspectRatio)
-                    self.changePixmap.emit(p)
-                time.sleep(0.03)  # Limit the frame rate
+                # Convert frame for PyQt display
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                h, w, ch = frame.shape
+                bytesPerLine = ch * w
+                convertToQtFormat = QImage(frame.data, w, h, bytesPerLine, QImage.Format_RGB888)
+                p = convertToQtFormat.scaled(800, 600, Qt.KeepAspectRatio)
+                self.changePixmap.emit(p, detected_objects)  # Adapt based on your PyQt slot
+
+                time.sleep(0.03)
 
     def stop(self):
         self.running = False
@@ -88,9 +101,15 @@ class ObjectDetectionApp(QMainWindow):
                 self.startStreaming()
 
     def startStreaming(self):
-        self.thread = ObjectDetectionThread(self.roi)
-        self.thread.changePixmap.connect(self.setImage)
+        self.thread = ObjectDetectionThread(self.roi, self.model, color_map)
+        self.thread.changePixmap.connect(self.updateGUI)
         self.thread.start()
+
+    @pyqtSlot(QImage, list)
+    def updateGUI(self, image, detected_objects):
+        # Update the main image display
+        pixmap = QPixmap.fromImage(image)
+        self.label.setPixmap(pixmap)
 
     @pyqtSlot(QImage)  # Adjust according to the actual signal emitted
     def setImage(self, image):
