@@ -71,6 +71,9 @@ class ObjectDetectionApp(QMainWindow):
         widget = QWidget()
         widget.setLayout(layout)
         self.setCentralWidget(widget)
+        self.sidebar = QWidget()  # Create a sidebar widget
+        self.sidebarLayout = QVBoxLayout()  # Create a layout for the sidebar
+        self.sidebar.setLayout(self.sidebarLayout)
 
     def selectROI(self):
         with mss.mss() as sct:
@@ -89,11 +92,16 @@ class ObjectDetectionApp(QMainWindow):
         self.thread.changePixmap.connect(self.setImage)
         self.thread.start()
 
-    @pyqtSlot(QImage, list)
-    def setImage(self, image, detected_objects):
+    @pyqtSlot(QImage)  # Adjust according to the actual signal emitted
+    def setImage(self, image):
         pixmap = QPixmap.fromImage(image)
         self.label.setPixmap(pixmap)
-        self.updateSidebar(detected_objects)
+
+    #@pyqtSlot(QImage, list)
+    #def setImage(self, image, detected_objects):
+    #    pixmap = QPixmap.fromImage(image)
+    #    self.label.setPixmap(pixmap)
+    #    self.updateSidebar(detected_objects)
 
     # Ensure to stop the thread when closing the app
     def closeEvent(self, event):
@@ -107,6 +115,7 @@ class ObjectDetectionApp(QMainWindow):
             widgetToRemove = self.sidebarLayout.itemAt(i).widget()
             self.sidebarLayout.removeWidget(widgetToRemove)
             widgetToRemove.setParent(None)
+            
 
         # Update the sidebar with new detected objects
         if detected_objects:
