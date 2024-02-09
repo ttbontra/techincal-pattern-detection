@@ -44,12 +44,6 @@ class ObjectDetectionApp(ctk.CTk):
         self.stream_frame = ctk.CTkFrame(self, width=800, height=600)
         self.stream_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)  
 
-        # Sidebar for object summary
-        #self.sidebar_frame = ctk.CTkFrame(self, width=200, height=600)
-        #self.sidebar_frame.pack(side=tk.LEFT, fill=tk.Y)  # Changed side to LEFT
-        #self.sidebar_label = ctk.CTkLabel(self.sidebar_frame, text="Detected Objects:", anchor="nw", justify=tk.LEFT)
-        #self.sidebar_label.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-
         self.sidebar_frame = tk.Frame(self, width=200)
         self.sidebar_frame.pack(side=tk.LEFT, fill=tk.Y, expand=False)
 
@@ -60,8 +54,7 @@ class ObjectDetectionApp(ctk.CTk):
         # Streaming label
         self.stream_label = ctk.CTkLabel(self.stream_frame)
         self.stream_label.pack(expand=True, fill=tk.BOTH)
-        #self.image_label = Label(self)  # Changed from ctk.CTkLabel to tkinter Label
-        #self.image_label.pack(expand=True, fill=tk.BOTH)
+
 
         # Start streaming in a separate thread
         self.streaming = False
@@ -133,23 +126,7 @@ class ObjectDetectionApp(ctk.CTk):
             print(f"File {filename} not found.")
             return None
     
-    #def update_sidebar(self, detected_objects):
-    #    if detected_objects:
-            # Count the occurrences of each detected object
-    #        object_counts = Counter(detected_objects)
-            
-            # Initialize sidebar text with a header
-    #        sidebar_text = "Detected Patterns:\n\n"
-            
-            # Append each unique detected object and its count to the sidebar text
-    #        for object_name, count in object_counts.items():
-    #            sidebar_text += f"{object_name.title()}: {count}\n"
-            
-            # Update the sidebar label with the new text
-    #        self.sidebar_label.configure(text=sidebar_text)
-    #    else:
-            # Update the sidebar label to indicate no objects were detected
-    #        self.sidebar_label.configure(text="No patterns detected.")
+
 
     def update_sidebar(self, detected_objects):
         # Clear previous sidebar content
@@ -167,27 +144,7 @@ class ObjectDetectionApp(ctk.CTk):
             label = tk.Label(self.sidebar_content_frame, text="No patterns detected.")
             label.pack()
 
-    #def toggle_pattern_details(self, pattern_name):
-    #    frame = self.expandable_frames.get(pattern_name)
-    #    if frame:
-            # Load the detailed information from JSON
-    #        strategy_info = self.load_strategy_info(pattern_name)
-    #        if strategy_info and frame.winfo_height() == 0:  # Expand if not already expanded
-                # Clear the frame first
-    #            for widget in frame.winfo_children():
-    #                widget.destroy()
-                
-                # Example: Display pattern description (customize as needed)
-    #            desc_text = strategy_info.get("pattern_description", {}).get("appearance", "No description available.")
-    #            desc_label = ctk.CTkLabel(frame, text=desc_text, wraplength=180, justify=tk.LEFT)
-    #            desc_label.pack()
-                
-    #            frame.config(height=desc_label.winfo_reqheight())  # Adjust height to fit content
-    #            frame.pack_propagate(False)
-    #        else:  # Collapse if already expanded
-    #            frame.config(height=0)
-    #            for widget in frame.winfo_children():
-    #                widget.destroy()
+  
 
     def create_expandable_section(self, pattern_name):
         # Button toggles the visibility of its associated detail_frame

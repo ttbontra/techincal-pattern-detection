@@ -1,8 +1,10 @@
-from ultralytics import YOLO
+# main.py
+from PyQt5.QtWidgets import QApplication
+import sys
+from ObjectDetectionApp import ObjectDetectionApp
 
-# Load a model
-model = YOLO("yolov8n.yaml")  # build a new model from scratch
-
-
-# Use the model
-model.train(data="custom_data.yaml", epochs=100)  
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    mainWindow = ObjectDetectionApp()
+    mainWindow.show()
+    sys.exit(app.exec_())
