@@ -1,6 +1,6 @@
 # ObjectDetectionApp.py
 import sys
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QComboBox
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QThread, pyqtSignal, Qt
 import cv2
@@ -12,6 +12,7 @@ from PyQt5.QtGui import QImage
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import QApplication
 import torch
+import json
 from ultralytics import YOLO
 from detect_objects import detect_objects, color_map
 
@@ -105,11 +106,21 @@ class ObjectDetectionApp(QMainWindow):
         self.thread.changePixmap.connect(self.updateGUI)
         self.thread.start()
 
+    def load_strategy_info(pattern_name):
+        filename = os.path.join("strategy", f"{pattern_name}.json")
+        try:
+            with open(filename, 'r') as file:
+                return json.load(file)
+        except FileNotFoundError:
+            print(f"File {filename} not found.")
+            return None
+
     @pyqtSlot(QImage, list)
     def updateGUI(self, image, detected_objects):
         # Update the main image display
         pixmap = QPixmap.fromImage(image)
         self.label.setPixmap(pixmap)
+        self.updateSidebar(detected_objects)
 
     @pyqtSlot(QImage)  # Adjust according to the actual signal emitted
     def setImage(self, image):
@@ -131,21 +142,30 @@ class ObjectDetectionApp(QMainWindow):
     def updateSidebar(self, detected_objects):
     # Clear the existing content in the sidebar
         for i in reversed(range(self.sidebarLayout.count())): 
-            widgetToRemove = self.sidebarLayout.itemAt(i).widget()
-            self.sidebarLayout.removeWidget(widgetToRemove)
-            widgetToRemove.setParent(None)
-            
+            self.sidebarLayout.itemAt(i).widget().setParent(None)
 
-        # Update the sidebar with new detected objects
-        if detected_objects:
-            for object_name in detected_objects:
-                # Create a label for each detected object
-                label = QLabel(object_name.capitalize())
-                self.sidebarLayout.addWidget(label)
-                # Here, you could also add buttons or links to display more information
-        else:
-            label = QLabel("No objects detected.")
-            self.sidebarLayout.addWidget(label)
+        # Display detected objects with dropdowns for strategies
+        def load_strategy_info(pattern_name):
+            filename = os.path.join("strategy", f"{pattern_name}.json")
+            try:
+                with open(filename, 'r') as file:
+                    return json.load(file)
+            except FileNotFoundError:
+                print(f"File {filename} not found.")
+                return None
+
+        unique_detected_objects = set(detected_objects)  # Remove duplicates
+        for object_name in unique_detected_objects:
+            strategy_info = load_strategy_info(object_name.replace(" ", "_").lower())
+            if strategy_info:
+                obj_label = QLabel(f"{object_name}:")
+                self.sidebarLayout.addWidget(obj_label)
+                
+                # Create dropdown (combo box) with strategy details
+                strategy_dropdown = QComboBox()
+                strategy_summary = f"Entry: {strategy_info['day_trading_strategy']['entry']['signal']}, Exit: {strategy_info['day_trading_strategy']['exit']['target']}"
+                strategy_dropdown.addItem(strategy_summary)
+                self.sidebarLayout.addWidget(strategy_dropdown)
 
 def main():
     app = QApplication(sys.argv)
