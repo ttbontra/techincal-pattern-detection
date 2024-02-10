@@ -167,27 +167,7 @@ class ObjectDetectionApp(ctk.CTk):
             label = tk.Label(self.sidebar_content_frame, text="No patterns detected.")
             label.pack()
 
-    #def toggle_pattern_details(self, pattern_name):
-    #    frame = self.expandable_frames.get(pattern_name)
-    #    if frame:
-            # Load the detailed information from JSON
-    #        strategy_info = self.load_strategy_info(pattern_name)
-    #        if strategy_info and frame.winfo_height() == 0:  # Expand if not already expanded
-                # Clear the frame first
-    #            for widget in frame.winfo_children():
-    #                widget.destroy()
-                
-                # Example: Display pattern description (customize as needed)
-    #            desc_text = strategy_info.get("pattern_description", {}).get("appearance", "No description available.")
-    #            desc_label = ctk.CTkLabel(frame, text=desc_text, wraplength=180, justify=tk.LEFT)
-    #            desc_label.pack()
-                
-    #            frame.config(height=desc_label.winfo_reqheight())  # Adjust height to fit content
-    #            frame.pack_propagate(False)
-    #        else:  # Collapse if already expanded
-    #            frame.config(height=0)
-    #            for widget in frame.winfo_children():
-    #                widget.destroy()
+ 
 
     def create_expandable_section(self, pattern_name):
         # Button toggles the visibility of its associated detail_frame

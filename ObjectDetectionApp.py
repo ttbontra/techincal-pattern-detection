@@ -1,6 +1,6 @@
 # ObjectDetectionApp.py
 import sys
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QComboBox
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QComboBox, QScrollArea
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QThread, pyqtSignal, Qt
 import cv2
@@ -15,6 +15,7 @@ import torch
 import json
 from ultralytics import YOLO
 from detect_objects import detect_objects, color_map
+from strategy_loader import load_strategy_info
 
 class ObjectDetectionThread(QThread):
     changePixmap = pyqtSignal(QImage, list)
@@ -67,6 +68,8 @@ class ObjectDetectionApp(QMainWindow):
     def __init__(self):
         super().__init__()
         self.model = self.loadModel()
+        self.setWindowTitle("Object Detection Stream")
+        self.setGeometry(100, 100, 1000, 600)  # x, y, width, height
         self.roi = None
         self.initUI()
         self.selectROI()
@@ -140,19 +143,8 @@ class ObjectDetectionApp(QMainWindow):
         super().closeEvent(event)
 
     def updateSidebar(self, detected_objects):
-    # Clear the existing content in the sidebar
         for i in reversed(range(self.sidebarLayout.count())): 
             self.sidebarLayout.itemAt(i).widget().setParent(None)
-
-        # Display detected objects with dropdowns for strategies
-        def load_strategy_info(pattern_name):
-            filename = os.path.join("strategy", f"{pattern_name}.json")
-            try:
-                with open(filename, 'r') as file:
-                    return json.load(file)
-            except FileNotFoundError:
-                print(f"File {filename} not found.")
-                return None
 
         unique_detected_objects = set(detected_objects)  # Remove duplicates
         for object_name in unique_detected_objects:
@@ -166,6 +158,7 @@ class ObjectDetectionApp(QMainWindow):
                 strategy_summary = f"Entry: {strategy_info['day_trading_strategy']['entry']['signal']}, Exit: {strategy_info['day_trading_strategy']['exit']['target']}"
                 strategy_dropdown.addItem(strategy_summary)
                 self.sidebarLayout.addWidget(strategy_dropdown)
+
 
 def main():
     app = QApplication(sys.argv)
