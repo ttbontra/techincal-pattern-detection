@@ -1,7 +1,9 @@
 # ObjectDetectionApp.py
 import sys
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QComboBox, QScrollArea
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel
 from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QStandardItemModel, QStandardItem
+from PyQt5.QtWidgets import  QTreeView, QApplication
 from PyQt5.QtCore import QThread, pyqtSignal, Qt
 import cv2
 import os
@@ -10,12 +12,13 @@ import mss
 import time
 from PyQt5.QtGui import QImage
 from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtWidgets import QApplication
-import torch
+
+#import torch
 import json
 from ultralytics import YOLO
 from detect_objects import detect_objects, color_map
 from PyQt5.QtWidgets import QHBoxLayout
+from PyQt5.QtWidgets import QTreeView
 #from strategy_loader import load_strategy_info
 
 class ObjectDetectionThread(QThread):
@@ -169,26 +172,31 @@ class ObjectDetectionApp(QMainWindow):
             self.sidebarLayout.removeWidget(widget_to_remove)
             widget_to_remove.setParent(None)
 
+        # Create a QTreeView and QStandardItemModel
+        tree_view = QTreeView()
+        model = QStandardItemModel()
+        tree_view.setModel(model)
+
         # Load and display strategy information for each unique detected object
         unique_detected_objects = set(detected_objects)
         for object_name in unique_detected_objects:
             strategy_info = self.load_strategy_info(object_name.replace(" ", "_").lower())
             if strategy_info:
-                # Display pattern name and type
-                pattern_name = strategy_info['pattern_description']['name']
-                pattern_type = strategy_info['pattern_description']['type']
-                pattern_label = QLabel(f"{pattern_name} - {pattern_type}")
-                self.sidebarLayout.addWidget(pattern_label)
-                
-                # Display entry signal
-                entry_signal = strategy_info['day_trading_strategy']['entry']['signal']
-                entry_label = QLabel(f"Entry: {entry_signal}")
-                self.sidebarLayout.addWidget(entry_label)
-                
-                # Display exit target
-                exit_target = strategy_info['day_trading_strategy']['exit']['target']
-                exit_label = QLabel(f"Exit: {exit_target}")
-                self.sidebarLayout.addWidget(exit_label)
+                # Create a QStandardItem for the object name
+                object_item = QStandardItem(object_name)
+                model.appendRow(object_item)
+
+                # Create QStandardItems for pattern name, type, entry signal, and exit target
+                pattern_name_item = QStandardItem(f"Pattern Name: {strategy_info['pattern_description']['name']}")
+                pattern_type_item = QStandardItem(f"Pattern Type: {strategy_info['pattern_description']['type']}")
+                entry_signal_item = QStandardItem(f"Entry Signal: {strategy_info['day_trading_strategy']['entry']['signal']}")
+                exit_target_item = QStandardItem(f"Exit Target: {strategy_info['day_trading_strategy']['exit']['target']}")
+
+                # Add the items as children of the object item
+                object_item.appendRow([pattern_name_item, pattern_type_item, entry_signal_item, exit_target_item])
+
+        # Add the tree view to the sidebar layout
+        self.sidebarLayout.addWidget(tree_view)
 
 def main():
     app = QApplication(sys.argv)
