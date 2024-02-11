@@ -2,10 +2,11 @@
 import os
 import json
 
-def load_strategy_info(pattern_name):
-    filename = os.path.join('strategy', f'{pattern_name}.json')
+def load_strategy_info(self, pattern_name):
+    """Instance method to load strategy information from JSON files."""
+    filename = os.path.join("strategy", f"{pattern_name}.json")
     try:
-        with open(filename, 'r', encoding='utf-8') as file:
+        with open(filename, 'r') as file:
             return json.load(file)
     except FileNotFoundError:
         print(f"File {filename} not found.")

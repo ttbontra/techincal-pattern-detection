@@ -15,7 +15,8 @@ import torch
 import json
 from ultralytics import YOLO
 from detect_objects import detect_objects, color_map
-from strategy_loader import load_strategy_info
+from PyQt5.QtWidgets import QHBoxLayout
+#from strategy_loader import load_strategy_info
 
 class ObjectDetectionThread(QThread):
     changePixmap = pyqtSignal(QImage, list)
@@ -82,15 +83,33 @@ class ObjectDetectionApp(QMainWindow):
     def initUI(self):
         self.setWindowTitle("Object Detection Stream")
         self.setGeometry(100, 100, 1000, 600)  # x, y, width, height
+        #self.label = QLabel(self)
+        #layout = QVBoxLayout()
+        #layout.addWidget(self.label)
+        #widget = QWidget()
+        #widget.setLayout(layout)
+        #self.setCentralWidget(widget)
+        #self.sidebar = QWidget()  # Create a sidebar widget
+        #self.sidebarLayout = QVBoxLayout()  # Create a layout for the sidebar
+        #self.sidebar.setLayout(self.sidebarLayout)
+        
+        #from PyQt5.QtWidgets import QHBoxLayout  # Import QHBoxLayout from PyQt5.QtWidgets
+
+        mainLayout = QVBoxLayout()
         self.label = QLabel(self)
-        layout = QVBoxLayout()
-        layout.addWidget(self.label)
-        widget = QWidget()
-        widget.setLayout(layout)
-        self.setCentralWidget(widget)
-        self.sidebar = QWidget()  # Create a sidebar widget
-        self.sidebarLayout = QVBoxLayout()  # Create a layout for the sidebar
+        mainLayout.addWidget(self.label)
+        self.sidebar = QWidget()
+        self.sidebarLayout = QVBoxLayout()
         self.sidebar.setLayout(self.sidebarLayout)
+        self.sidebar.setFixedWidth(200)
+        container = QWidget()
+        container.setLayout(mainLayout)
+        hLayout = QHBoxLayout()  # Fix: Import QHBoxLayout and create an instance
+        hLayout.addWidget(container)
+        hLayout.addWidget(self.sidebar)
+        centralWidget = QWidget()
+        centralWidget.setLayout(hLayout)  # Fix: Replace hLayout with container
+        self.setCentralWidget(centralWidget)
 
     def selectROI(self):
         with mss.mss() as sct:
@@ -109,14 +128,15 @@ class ObjectDetectionApp(QMainWindow):
         self.thread.changePixmap.connect(self.updateGUI)
         self.thread.start()
 
-    def load_strategy_info(pattern_name):
-        filename = os.path.join("strategy", f"{pattern_name}.json")
-        try:
-            with open(filename, 'r') as file:
-                return json.load(file)
-        except FileNotFoundError:
-            print(f"File {filename} not found.")
-            return None
+    # Remove the redundant function definition
+    def load_strategy_info(self, pattern_name):
+         filename = os.path.join("strategy", f"{pattern_name}.json")
+         try:
+             with open(filename, 'r') as file:
+                 return json.load(file)
+         except FileNotFoundError:
+             print(f"File {filename} not found.")
+             return None
 
     @pyqtSlot(QImage, list)
     def updateGUI(self, image, detected_objects):
@@ -143,22 +163,32 @@ class ObjectDetectionApp(QMainWindow):
         super().closeEvent(event)
 
     def updateSidebar(self, detected_objects):
+        # Clear existing widgets from the sidebar layout
         for i in reversed(range(self.sidebarLayout.count())): 
-            self.sidebarLayout.itemAt(i).widget().setParent(None)
+            widget_to_remove = self.sidebarLayout.itemAt(i).widget()
+            self.sidebarLayout.removeWidget(widget_to_remove)
+            widget_to_remove.setParent(None)
 
-        unique_detected_objects = set(detected_objects)  # Remove duplicates
+        # Load and display strategy information for each unique detected object
+        unique_detected_objects = set(detected_objects)
         for object_name in unique_detected_objects:
-            strategy_info = load_strategy_info(object_name.replace(" ", "_").lower())
+            strategy_info = self.load_strategy_info(object_name.replace(" ", "_").lower())
             if strategy_info:
-                obj_label = QLabel(f"{object_name}:")
-                self.sidebarLayout.addWidget(obj_label)
+                # Display pattern name and type
+                pattern_name = strategy_info['pattern_description']['name']
+                pattern_type = strategy_info['pattern_description']['type']
+                pattern_label = QLabel(f"{pattern_name} - {pattern_type}")
+                self.sidebarLayout.addWidget(pattern_label)
                 
-                # Create dropdown (combo box) with strategy details
-                strategy_dropdown = QComboBox()
-                strategy_summary = f"Entry: {strategy_info['day_trading_strategy']['entry']['signal']}, Exit: {strategy_info['day_trading_strategy']['exit']['target']}"
-                strategy_dropdown.addItem(strategy_summary)
-                self.sidebarLayout.addWidget(strategy_dropdown)
-
+                # Display entry signal
+                entry_signal = strategy_info['day_trading_strategy']['entry']['signal']
+                entry_label = QLabel(f"Entry: {entry_signal}")
+                self.sidebarLayout.addWidget(entry_label)
+                
+                # Display exit target
+                exit_target = strategy_info['day_trading_strategy']['exit']['target']
+                exit_label = QLabel(f"Exit: {exit_target}")
+                self.sidebarLayout.addWidget(exit_label)
 
 def main():
     app = QApplication(sys.argv)
