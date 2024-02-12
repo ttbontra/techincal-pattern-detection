@@ -19,6 +19,8 @@ from ultralytics import YOLO
 from detect_objects import detect_objects, color_map
 from PyQt5.QtWidgets import QHBoxLayout
 from PyQt5.QtWidgets import QTreeView
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QSizePolicy
 #from strategy_loader import load_strategy_info
 
 class ObjectDetectionThread(QThread):
@@ -86,17 +88,6 @@ class ObjectDetectionApp(QMainWindow):
     def initUI(self):
         self.setWindowTitle("Object Detection Stream")
         self.setGeometry(100, 100, 1000, 600)  # x, y, width, height
-        #self.label = QLabel(self)
-        #layout = QVBoxLayout()
-        #layout.addWidget(self.label)
-        #widget = QWidget()
-        #widget.setLayout(layout)
-        #self.setCentralWidget(widget)
-        #self.sidebar = QWidget()  # Create a sidebar widget
-        #self.sidebarLayout = QVBoxLayout()  # Create a layout for the sidebar
-        #self.sidebar.setLayout(self.sidebarLayout)
-        
-        #from PyQt5.QtWidgets import QHBoxLayout  # Import QHBoxLayout from PyQt5.QtWidgets
 
         mainLayout = QVBoxLayout()
         self.label = QLabel(self)
@@ -104,14 +95,15 @@ class ObjectDetectionApp(QMainWindow):
         self.sidebar = QWidget()
         self.sidebarLayout = QVBoxLayout()
         self.sidebar.setLayout(self.sidebarLayout)
-        self.sidebar.setFixedWidth(200)
+        self.sidebar.setMinimumWidth(200)  # Set a minimum width for the sidebar
+        self.sidebar.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)  # Allow the sidebar to expand or contract
         container = QWidget()
         container.setLayout(mainLayout)
-        hLayout = QHBoxLayout()  # Fix: Import QHBoxLayout and create an instance
+        hLayout = QHBoxLayout()
         hLayout.addWidget(container)
         hLayout.addWidget(self.sidebar)
         centralWidget = QWidget()
-        centralWidget.setLayout(hLayout)  # Fix: Replace hLayout with container
+        centralWidget.setLayout(hLayout)
         self.setCentralWidget(centralWidget)
 
     def selectROI(self):
@@ -184,6 +176,7 @@ class ObjectDetectionApp(QMainWindow):
             if strategy_info:
                 # Create a QStandardItem for the object name
                 object_item = QStandardItem(object_name)
+                object_item.setFont(QFont("Arial", 10, QFont.Bold))  # Set the font to bold
                 model.appendRow(object_item)
 
                 # Create QStandardItems for pattern name, type, entry signal, and exit target
@@ -192,11 +185,35 @@ class ObjectDetectionApp(QMainWindow):
                 entry_signal_item = QStandardItem(f"Entry Signal: {strategy_info['day_trading_strategy']['entry']['signal']}")
                 exit_target_item = QStandardItem(f"Exit Target: {strategy_info['day_trading_strategy']['exit']['target']}")
 
+                # Set the text wrapping mode for the items
+                pattern_name_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+                pattern_name_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+                pattern_name_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+                pattern_name_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+
+                # Set the text wrapping mode for the items
+                pattern_name_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+                pattern_type_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+                entry_signal_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+                exit_target_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+
+                # Set the text wrapping mode for the items
+                pattern_name_item.setFlags(pattern_name_item.flags() | Qt.ItemIsEditable)
+                pattern_type_item.setFlags(pattern_type_item.flags() | Qt.ItemIsEditable)
+                entry_signal_item.setFlags(entry_signal_item.flags() | Qt.ItemIsEditable)
+                exit_target_item.setFlags(exit_target_item.flags() | Qt.ItemIsEditable)
+
                 # Add the items as children of the object item
-                object_item.appendRow([pattern_name_item, pattern_type_item, entry_signal_item, exit_target_item])
+                object_item.appendRow([pattern_name_item])
+                object_item.appendRow([pattern_type_item])
+                object_item.appendRow([entry_signal_item])
+                object_item.appendRow([exit_target_item])
 
         # Add the tree view to the sidebar layout
         self.sidebarLayout.addWidget(tree_view)
+
+        # Expand all items in the tree view by default
+        tree_view.expandAll()
 
 def main():
     app = QApplication(sys.argv)

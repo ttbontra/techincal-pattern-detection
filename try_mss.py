@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import mss
-import pyautogui
+
 
 # Global variables
 roi_selected = False
