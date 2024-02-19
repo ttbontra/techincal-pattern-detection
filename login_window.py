@@ -1,6 +1,9 @@
 import mysql.connector
 from PyQt5.QtWidgets import QWidget, QPushButton, QLineEdit, QVBoxLayout, QMessageBox
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, QUrl
+
+from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
+import json
 
 class LoginWindow(QWidget):
     login_successful = pyqtSignal()
@@ -10,6 +13,7 @@ class LoginWindow(QWidget):
         self.setWindowTitle('Login')
         self.setGeometry(100, 100, 280, 100)
         self.initUI()
+        self.network_manager = QNetworkAccessManager()  # Add network_manager attribute
 
     def initUI(self):
         layout = QVBoxLayout()
@@ -23,6 +27,10 @@ class LoginWindow(QWidget):
         self.password.setEchoMode(QLineEdit.Password)
         layout.addWidget(self.password)
 
+        self.email = QLineEdit(self)
+        self.email.setPlaceholderText('Email')
+        layout.addWidget(self.email)
+
         login_button = QPushButton('Login', self)
         login_button.clicked.connect(self.check_credentials)
         layout.addWidget(login_button)
@@ -34,33 +42,46 @@ class LoginWindow(QWidget):
         self.setLayout(layout)
 
     def check_credentials(self):
-        connection = mysql.connector.connect(
-            host='localhost',
-            user='root',  # Use your username
-            password='stable',  # Use your password
-            database='stocks'
-        )
-        cursor = connection.cursor()
-        cursor.execute("SELECT * FROM users WHERE username=%s AND password=%s", (self.username.text(), self.password.text()))
-        result = cursor.fetchone()
+        data = json.dumps({
+            "username": self.username.text(),
+            "password": self.password.text()
+        }).encode('utf-8')
 
-        if result:
-            self.login_successful.emit()
+        request = QNetworkRequest(QUrl("http://127.0.0.1:8000/login"))
+        request.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+        reply = self.network_manager.post(request, data)
+        reply.finished.connect(self.on_login_response)
+
+    def on_login_response(self):
+        reply = self.sender()
+        err = reply.error()
+
+        if err == QNetworkReply.NoError:
+            if reply.url().toString().endswith("/login"):
+                self.login_successful.emit()
+                self.hide()
+                QMessageBox.information(self, "Login Successful", "You have successfully logged in.")
         else:
-            QMessageBox.warning(self, 'Error', 'Bad username or password')
-
-        connection.close()
+            QMessageBox.critical(self, "Error", f"An error occurred: {reply.errorString()}")
 
     def register_user(self):
-        connection = mysql.connector.connect(
-            host='localhost',
-            user='root',  # Use your username
-            password='stable',  # Use your password
-            database='stocks'
-        )
-        cursor = connection.cursor()
-        cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (self.username.text(), self.password.text()))
-        connection.commit()
-        QMessageBox.information(self, 'Success', 'User registered successfully')
+        data = json.dumps({
+            "username": self.username.text(),
+            "password": self.password.text(),
+            "email": self.email.text()
+        }).encode('utf-8')
 
-        connection.close()
+        request = QNetworkRequest(QUrl("http://127.0.0.1:8000/signup"))
+        request.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+        reply = self.network_manager.post(request, data)
+        reply.finished.connect(self.on_signup_response)
+
+    def on_signup_response(self):
+        reply = self.sender()
+        err = reply.error()
+
+        if err == QNetworkReply.NoError:
+            if reply.url().toString().endswith("/signup"):
+                QMessageBox.information(self, "Signup Successful", "You have successfully signed up.")
+        else:
+            QMessageBox.critical(self, "Error", f"An error occurred: {reply.errorString()}")
