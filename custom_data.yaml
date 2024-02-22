@@ -22,5 +22,38 @@ names:
   5: mini bearflag
   6: cloudbank
   7: inverse cloudbank
-  
+  #8: head and shoulders
+  #9: inverse head and shoulders
+  #10: double top
+  #11: double bottom
+  #12: triple top
+  #13: triple bottom
+  #14: scallop
+  #15: inverse scallop
 
+  
+augmentation:
+  hue: 0.1 # Adjust the image hue by a small amount
+  saturation: 1.5 # Increase saturation to make the colors more vivid
+  exposure: 1.5 # Adjust exposure to simulate different lighting conditions
+  flip: 0.5 # Probability of horizontal image flip
+  mosaic: true # Use mosaic augmentation if supported
+  mixup: 0.2 
+
+class_weights:
+  0: 0.221
+  1: 1.197
+  2: 0.697
+  3: 2.867
+  4: 4.048
+  5: 2.699
+  6: 5.005
+  7: 22.938
+  #8: 1.0
+  #9: 1.0
+  #10: 1.0
+  #11: 1.0
+  #12: 2.5
+  #13: 2.5
+  #14: 3.0
+  #15: 3.0

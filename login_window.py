@@ -4,6 +4,7 @@ from PyQt5.QtCore import pyqtSignal, QUrl
 
 from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
 import json
+from PyQt5.QtGui import QDesktopServices
 
 class LoginWindow(QWidget):
     login_successful = pyqtSignal()
@@ -62,7 +63,7 @@ class LoginWindow(QWidget):
                 self.hide()
                 QMessageBox.information(self, "Login Successful", "You have successfully logged in.")
         else:
-            QMessageBox.critical(self, "Error", f"An error occurred: {reply.errorString()}")
+            QMessageBox.critical(self, "Error", "You do not have a valid subscription. Please sign up to use this service.")
 
     def register_user(self):
         data = json.dumps({
@@ -83,5 +84,7 @@ class LoginWindow(QWidget):
         if err == QNetworkReply.NoError:
             if reply.url().toString().endswith("/signup"):
                 QMessageBox.information(self, "Signup Successful", "You have successfully signed up.")
+                # Redirect to webpage for subscription purchase
+                QDesktopServices.openUrl(QUrl("https://github.com/ttbontra/techincal-pattern-detection/blob/main/login_window.py"))
         else:
-            QMessageBox.critical(self, "Error", f"An error occurred: {reply.errorString()}")
+            QMessageBox.critical(self, "Error", "You do not have a valid subscription. Please sign up to use this service.")
