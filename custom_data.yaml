@@ -24,12 +24,12 @@ names:
   7: inverse cloudbank
   #8: head and shoulders
   #9: inverse head and shoulders
-  #10: double top
-  #11: double bottom
+  10: double top
+  11: double bottom
   #12: triple top
   #13: triple bottom
-  #14: scallop
-  #15: inverse scallop
+  14: scallop
+  15: inverse scallop
 
   
 augmentation:
@@ -41,19 +41,19 @@ augmentation:
   mixup: 0.2 
 
 class_weights:
-  0: 0.221
-  1: 1.197
-  2: 0.697
-  3: 2.867
-  4: 4.048
-  5: 2.699
-  6: 5.005
-  7: 22.938
-  #8: 1.0
-  #9: 1.0
-  #10: 1.0
-  #11: 1.0
+  0: 0.008457
+  1: 0.024080
+  2: 0.032456
+  3: 0.070870
+  4: 0.088169
+  5: 0.097369
+  6: 0.121711
+  7: 0.386118
+  #8: 0.533211
+  #9: 2.239486
+  10: 2.239486
+  11: 2.799357
   #12: 2.5
   #13: 2.5
-  #14: 3.0
-  #15: 3.0
+  14: 0.533211
+  15: 5.598715
