@@ -1,0 +1,28 @@
+{
+    "pattern_description": {
+      "name": "Inverse Scallop Pattern",
+      "type": "Reversal or Continuation Pattern",
+      "appearance": "The Inverse Scallop pattern is essentially the opposite of the Scallop pattern. It appears during an uptrend (for the bearish reversal or continuation) or a downtrend (for the bullish reversal or continuation). In an uptrend, it resembles an upside-down 'J' shape, indicating the potential for a bearish reversal or continuation. Conversely, in a downtrend, it forms a regular 'J' shape, suggesting a bullish reversal or continuation. The pattern is characterized by a rounded formation that signifies a gradual transition in the price direction.",
+      "significance": "The Inverse Scallop pattern indicates a potential shift in market sentiment, from bullish to bearish in an uptrend, or from bearish to bullish in a downtrend, often following a period of consolidation or a slow trend reversal."
+    },
+    "day_trading_strategy": {
+      "entry": {
+        "signal": "For a bearish reversal or continuation (upside-down 'J' in an uptrend), enter a short position when the price action confirms the rounding top and starts descending. For a bullish reversal or continuation ('J' shape in a downtrend), enter a long position as the price action completes the 'J' curve and begins ascending.",
+        "confirmation": "A confirmation could be a breakout from a trend line drawn along the initial part of the Inverse Scallop formation or increased volume as the price moves out of the scallop shape."
+      },
+      "exit": {
+        "target": "Set profit targets by projecting the height of the pattern's opening at the widest part forward from the breakout point. For bearish patterns, project downward; for bullish patterns, project upward.",
+        "stop_loss": "Place a stop loss just outside the scallop formation to minimize losses. For a bearish reversal or continuation, this would be just above the rounded top. For a bullish reversal or continuation, just below the rounded bottom."
+      },
+      "risk_management": {
+        "position_size": "Adjust your position size so that the risk from the entry point to the stop loss does not exceed 1-2% of your trading capital.",
+        "profit_booking": "Consider booking partial profits at predetermined targets while potentially using a trailing stop loss to maximize gains."
+      },
+      "considerations": {
+        "volume": "An increase in volume during the breakout from the scallop formation can add confirmation to the pattern's validity.",
+        "pattern_recognition": "The subjective nature of the Inverse Scallop pattern means that using other technical analysis tools for confirmation can help identify more reliable trading opportunities.",
+        "market_context": "The effectiveness of the Inverse Scallop patterns can be influenced by overall market conditions and sentiment. It's important to analyze the pattern within the context of the current market trends and indicators."
+      }
+    }
+  }
+  
