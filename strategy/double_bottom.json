@@ -1,0 +1,28 @@
+{
+    "pattern_description": {
+      "name": "Double Bottom Pattern",
+      "type": "Reversal Pattern",
+      "appearance": "The double bottom pattern is identified by two consecutive troughs at approximately the same price level, separated by a peak. This pattern typically appears after a prolonged downtrend, suggesting that the asset is finding strong support and struggling to move lower. The confirmation of the pattern occurs when the price breaks above the resistance level formed by the peak between the two troughs.",
+      "significance": "The double bottom pattern signals a potential reversal of the prevailing downtrend into an uptrend. It indicates that selling pressure is diminishing and buyers are beginning to take control, potentially leading to a significant increase in price."
+    },
+    "day_trading_strategy": {
+      "entry": {
+        "signal": "Enter a long position when the price breaks above the resistance level (the peak between the two troughs) with significant volume, confirming the reversal pattern.",
+        "confirmation": "A conservative strategy would wait for a candle to close above the resistance level to confirm the breakout. Additional confirmation could be sought from indicators like a moving average crossover or increased buying volume."
+      },
+      "exit": {
+        "target": "The profit target is typically set by measuring the height of the pattern (from the resistance level to the bottom of the troughs) and projecting that distance upward from the breakout point.",
+        "stop_loss": "A stop loss can be placed just below the higher of the two troughs or below the resistance level that was broken, to limit potential losses if the price reverses its direction."
+      },
+      "risk_management": {
+        "position_size": "Calculate your position size so that the potential loss from the entry point to the stop loss does not exceed 1-2% of your trading capital.",
+        "profit_booking": "Consider booking partial profits at predetermined levels or moving the stop loss to break even as the trade becomes profitable, to protect against market reversals."
+      },
+      "considerations": {
+        "volume": "An increase in volume on the breakout above the resistance level provides confirmation of the pattern and the likelihood of a successful reversal.",
+        "false_breakouts": "Be cautious of false breakouts by waiting for confirmation and considering the broader market context. Utilizing additional technical indicators can help validate the trade signal.",
+        "market_conditions": "Double bottom patterns are more reliable when they align with overall market sentiment and other bullish indicators."
+      }
+    }
+  }
+  
