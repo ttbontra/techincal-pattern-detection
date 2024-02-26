@@ -1,0 +1,28 @@
+{
+    "pattern_description": {
+      "name": "Inverse Cloudbank Pattern",
+      "type": "Reversal Pattern",
+      "appearance": "The Inverse Cloudbank pattern is characterized by a consolidation phase that features a 'cloud' of tightly packed, high-volatility candles, followed by a decisive breakout candle that significantly closes in the opposite direction of the prevailing trend. Unlike the Cloudbank, the 'cloud' in this pattern is defined by erratic, wide-ranging price movements.",
+      "significance": "This pattern indicates a period of uncertainty and high volatility, with the market exploring a range of prices but failing to find direction. The breakout signifies the market has chosen a direction, suggesting a potential reversal of the previous trend."
+    },
+    "day_trading_strategy": {
+      "entry": {
+        "signal": "For a bullish reversal, enter a long position when a candle closes significantly below the 'cloud' but is quickly followed by a decisive and strong closing above the 'cloud' on increased volume. For a bearish reversal, the entry is a short position when a candle closes significantly above the 'cloud' but is followed by a strong closing below the 'cloud' on high volume.",
+        "confirmation": "Use additional indicators, such as a RSI divergence or a MACD crossover, as confirmation of the trend reversal, strengthening the signal provided by the breakout candle."
+      },
+      "exit": {
+        "target": "Profit targets can be established by identifying key support (for bearish setups) or resistance levels (for bullish setups) near the breakout point. Another method is to measure the maximum height of the 'cloud' and project that distance from the point of breakout or breakdown as the target.",
+        "stop_loss": "A stop loss should be placed just inside the 'cloud' on the side opposite of the breakout to limit losses if the pattern does not lead to a continued reversal."
+      },
+      "risk_management": {
+        "position_size": "Adjust the position size based on the distance to your stop loss, ensuring the potential loss does not exceed 1-2% of your trading capital.",
+        "profit_booking": "Consider booking partial profits at predetermined levels while employing a trailing stop loss for the remaining position to capture further movement while protecting accrued gains."
+      },
+      "considerations": {
+        "volume": "A significant volume increase on the breakout or breakdown is essential for confirming the Inverse Cloudbank pattern's validity.",
+        "market_conditions": "The pattern should be traded in the context of overall market sentiment and upcoming economic events that could affect price movement.",
+        "false_breakouts": "To mitigate the risk of false breakouts, wait for additional confirmation signals and consider the overall market trend and volume analysis."
+      }
+    }
+  }
+  
