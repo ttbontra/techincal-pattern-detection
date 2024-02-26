@@ -1,0 +1,28 @@
+{
+    "pattern_description": {
+      "name": "Double Top Pattern",
+      "type": "Reversal Pattern",
+      "appearance": "The double top pattern is characterized by two consecutive peaks at approximately the same price level, separated by a valley. This pattern typically forms after an extended upward trend, indicating that the asset is struggling to push higher. The confirmation of the pattern occurs when the price falls below the support level formed by the valley.",
+      "significance": "The double top pattern signals a potential reversal of the prevailing uptrend into a downtrend. It suggests that the buying pressure is exhausted and that sellers are starting to dominate, potentially leading to a significant decline in price."
+    },
+    "day_trading_strategy": {
+      "entry": {
+        "signal": "Enter a short position when the price breaks below the support level (the valley between the two peaks) with significant volume, confirming the reversal pattern.",
+        "confirmation": "A conservative approach would wait for a candle to close below the support level to confirm the breakdown. Additional confirmation could include indicators like a moving average crossover or increased selling volume."
+      },
+      "exit": {
+        "target": "The profit target is typically set by measuring the height of the pattern (from the support level to the top of the peaks) and projecting that distance downward from the breakout point.",
+        "stop_loss": "A stop loss can be placed just above the lower of the two peaks or above the support level to limit potential losses if the price reverses back into the previous trend."
+      },
+      "risk_management": {
+        "position_size": "Adjust your position size to ensure that the potential loss from the entry point to the stop loss does not exceed 1-2% of your trading capital.",
+        "profit_booking": "Consider taking partial profits at predetermined levels or adjusting the stop loss to break even as the trade moves in your favor, to protect against sudden market reversals."
+      },
+      "considerations": {
+        "volume": "A significant increase in volume on the breakout from the support level adds confirmation to the pattern and the likelihood of a successful trade.",
+        "false_breakouts": "Beware of false breakouts by waiting for confirmation and considering the broader market context. Using additional technical indicators can help validate the trade signal.",
+        "market_conditions": "Double top patterns are more reliable when they align with overall market sentiment and other bearish indicators."
+      }
+    }
+  }
+  
