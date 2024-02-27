@@ -12,7 +12,7 @@ import mss
 import time
 from PyQt5.QtGui import QImage, QPalette, QColor
 from PyQt5.QtCore import pyqtSlot
-
+import streamlit as st
 #import torch
 import json
 from ultralytics import YOLO
@@ -95,6 +95,9 @@ class ObjectDetectionApp(QMainWindow):
         mainLayout.addWidget(self.label)
         self.sidebar = QWidget()
         self.sidebarLayout = QVBoxLayout()
+        sidebar_title = QLabel('Pattern Summary')
+        sidebar_title.setFont(QFont("Arial", 12, QFont.Bold))
+        self.sidebarLayout.addWidget(sidebar_title)
         self.sidebar.setLayout(self.sidebarLayout)
         self.sidebar.setMinimumWidth(200)  # Set a minimum width for the sidebar
         self.sidebar.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)  # Allow the sidebar to expand or contract
@@ -106,7 +109,7 @@ class ObjectDetectionApp(QMainWindow):
         centralWidget = QWidget()
         centralWidget.setLayout(hLayout)
         self.setCentralWidget(centralWidget)
-
+        st.sidebar.title('Pattern Summary')
         QApplication.setStyle(QStyleFactory.create("Fusion"))
 
         # Set the color palette for dark mode
@@ -181,6 +184,9 @@ class ObjectDetectionApp(QMainWindow):
         # Clear existing widgets from the sidebar layout
         for i in reversed(range(self.sidebarLayout.count())): 
             widget_to_remove = self.sidebarLayout.itemAt(i).widget()
+            if widget_to_remove is not None:  # Ensure the title label is not removed
+                self.sidebarLayout.removeWidget(widget_to_remove)
+                widget_to_remove.setParent(None)
             self.sidebarLayout.removeWidget(widget_to_remove)
             widget_to_remove.setParent(None)
 
@@ -188,6 +194,9 @@ class ObjectDetectionApp(QMainWindow):
         tree_view = QTreeView()
         model = QStandardItemModel()
         tree_view.setModel(model)
+        sidebar_title = QLabel('Pattern Summary')
+        sidebar_title.setFont(QFont("Arial", 12, QFont.Bold))
+        self.sidebarLayout.addWidget(sidebar_title)
 
         # Load and display strategy information for each unique detected object
         unique_detected_objects = set(detected_objects)
