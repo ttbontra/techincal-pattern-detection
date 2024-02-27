@@ -34,19 +34,6 @@ class ObjectDetectionThread(QThread):
         self.color_map = color_map
         self.running = True
        
-    #def __init__(self, roi, *args, **kwargs):
-    #    super(ObjectDetectionThread, self).__init__(*args, **kwargs)
-    #    self.roi = roi
-    #    self.running = True
-    #    self.model = model
-    #    self.sidebar = QWidget()  # Create a sidebar widget
-    #    self.sidebarLayout = QVBoxLayout()  # Create a layout for the sidebar
-    #    self.sidebar.setLayout(self.sidebarLayout)
-
-    #def loadModel(self):
-    #    model_path = os.path.join('models', 'best.pt')  
-    #    model =YOLO(model_path)
-    #    return model
         
     def run(self):
         with mss.mss() as sct:
@@ -118,8 +105,8 @@ class ObjectDetectionApp(QMainWindow):
         dark_palette.setColor(QPalette.WindowText, QColor(255, 255, 255))
         dark_palette.setColor(QPalette.Base, QColor(25, 25, 25))
         dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
-        dark_palette.setColor(QPalette.ToolTipBase, QColor(255, 255, 255))
-        dark_palette.setColor(QPalette.ToolTipText, QColor(255, 255, 255))
+        #dark_palette.setColor(QPalette.ToolTipBase, QColor(255, 255, 255))
+        #dark_palette.setColor(QPalette.ToolTipText, QColor(255, 255, 255))
         dark_palette.setColor(QPalette.Text, QColor(255, 255, 255))
         dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
         dark_palette.setColor(QPalette.ButtonText, QColor(255, 255, 255))
@@ -168,12 +155,6 @@ class ObjectDetectionApp(QMainWindow):
         pixmap = QPixmap.fromImage(image)
         self.label.setPixmap(pixmap)
 
-    #@pyqtSlot(QImage, list)
-    #def setImage(self, image, detected_objects):
-    #    pixmap = QPixmap.fromImage(image)
-    #    self.label.setPixmap(pixmap)
-    #    self.updateSidebar(detected_objects)
-
     # Ensure to stop the thread when closing the app
     def closeEvent(self, event):
         self.thread.stop()
@@ -197,6 +178,9 @@ class ObjectDetectionApp(QMainWindow):
         sidebar_title = QLabel('Pattern Summary')
         sidebar_title.setFont(QFont("Arial", 12, QFont.Bold))
         self.sidebarLayout.addWidget(sidebar_title)
+        tree_view.setHeaderHidden(True)  # Optionally hide the header for more space
+        tree_view.setWordWrap(True)  # Enable word wrapping within tree view items
+        tree_view.setColumnWidth(0, self.sidebar.width() - 20) 
 
         # Load and display strategy information for each unique detected object
         unique_detected_objects = set(detected_objects)
