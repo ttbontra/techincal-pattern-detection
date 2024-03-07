@@ -15,6 +15,7 @@ class LoginWindow(QWidget):
         self.setGeometry(100, 100, 280, 100)
         self.initUI()
         self.network_manager = QNetworkAccessManager()  # Add network_manager attribute
+        self.csrf_token = None 
 
     def initUI(self):
         layout = QVBoxLayout()
@@ -33,14 +34,30 @@ class LoginWindow(QWidget):
         layout.addWidget(self.email)
 
         login_button = QPushButton('Login', self)
-        login_button.clicked.connect(self.check_credentials)
+        #login_button.clicked.connect(self.check_credentials)
+        login_button.clicked.connect(self.fetch_csrf_token)
         layout.addWidget(login_button)
 
-        register_button = QPushButton('Register', self)
-        register_button.clicked.connect(self.register_user)
-        layout.addWidget(register_button)
-
         self.setLayout(layout)
+
+    def fetch_csrf_token(self):
+        request = QNetworkRequest(QUrl("http://127.0.0.1:8000/accounts/login/"))
+        reply = self.network_manager.get(request)
+        reply.finished.connect(self.on_csrf_token_received)
+
+    def on_csrf_token_received(self):
+        reply = self.sender()
+        if reply.error() == QNetworkReply.NoError:
+            cookies = self.network_manager.cookieJar().cookiesForUrl(QUrl("http://127.0.0.1:8000/accounts/login/"))
+            for cookie in cookies:
+                if cookie.name() == b'csrftoken':
+                    # Convert QByteArray to Python byte string and then decode
+                    self.csrf_token = bytes(cookie.value()).decode('utf-8')
+                    self.check_credentials()  # Now you can proceed to check credentials
+                    break
+        reply.deleteLater()
+
+
 
     def check_credentials(self):
         data = json.dumps({
@@ -48,41 +65,47 @@ class LoginWindow(QWidget):
             "password": self.password.text()
         }).encode('utf-8')
 
-        request = QNetworkRequest(QUrl("http://127.0.0.1:8000/login"))
+        request = QNetworkRequest(QUrl("http://127.0.0.1:8000/accounts/login/"))
         request.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+        request.setRawHeader(b"X-CSRFToken", self.csrf_token.encode('utf-8'))
+
         reply = self.network_manager.post(request, data)
         reply.finished.connect(self.on_login_response)
 
     def on_login_response(self):
         reply = self.sender()
-        err = reply.error()
-
-        if err == QNetworkReply.NoError:
-            if reply.url().toString().endswith("/login"):
+        if reply.error() == QNetworkReply.NoError:
+            if reply.url().toString().endswith("accounts/login/"):
                 self.login_successful.emit()
                 self.hide()
                 QMessageBox.information(self, "Login Successful", "You have successfully logged in.")
+            # Handle successful login
+            pass
         else:
             QMessageBox.critical(self, "Error", "You do not have a valid subscription. Please sign up to use this service.")
+            # Handle login failure
+            pass
+        reply.deleteLater()
 
-    def register_user(self):
-        data = json.dumps({
-            "username": self.username.text(),
-            "password": self.password.text(),
-            "email": self.email.text()
-        }).encode('utf-8')
+#    def on_login_response(self):
+#        reply = self.sender()
+#        err = reply.error()
 
-        request = QNetworkRequest(QUrl("http://127.0.0.1:8000/signup"))
-        request.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
-        reply = self.network_manager.post(request, data)
-        reply.finished.connect(self.on_signup_response)
+#        if err == QNetworkReply.NoError:
+#            if reply.url().toString().endswith("accounts/login/"):
+#                self.login_successful.emit()
+#                self.hide()
+#                QMessageBox.information(self, "Login Successful", "You have successfully logged in.")
+#        else:
+#            QMessageBox.critical(self, "Error", "You do not have a valid subscription. Please sign up to use this service.")
+
 
     def on_signup_response(self):
         reply = self.sender()
         err = reply.error()
 
         if err == QNetworkReply.NoError:
-            if reply.url().toString().endswith("/signup"):
+            if reply.url().toString().endswith("/register"):
                 QMessageBox.information(self, "Signup Successful", "You have successfully signed up.")
                 # Redirect to webpage for subscription purchase
                 QDesktopServices.openUrl(QUrl("https://github.com/ttbontra/techincal-pattern-detection/blob/main/login_window.py"))
