@@ -12,7 +12,7 @@ class LoginWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Login')
-        self.setGeometry(100, 100, 280, 100)
+        self.setGeometry(200, 400, 400, 100)
         self.initUI()
         self.network_manager = QNetworkAccessManager()  # Add network_manager attribute
         self.csrf_token = None 
