@@ -2,8 +2,10 @@
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout
 import subprocess
 import os
+import sys
 from PyQt5.QtWidgets import QApplication, QStyleFactory
 from PyQt5.QtGui import QPalette, QColor
+from ObjectDetectionApp import ObjectDetectionApp
 
 class HomePage(QWidget):
     def __init__(self):
@@ -26,12 +28,14 @@ class HomePage(QWidget):
 
 
     def run_object_detection(self):
-        script_path = os.path.join(os.path.dirname(__file__), 'ObjectDetectionApp.py')
-        # Specify the full path to the correct Python executable
-        python_executable = 'C:\\Users\\ttbon\\Documents\\technical_pattern_detection\\.venv\\Scripts\\python.exe'  # Adjust this path
-        try:
-            result = subprocess.run([python_executable, script_path], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-            print("Output:", result.stdout)
-        except subprocess.CalledProcessError as e:
-            print("Error:", e.stderr)
-            print("The script exited with status code", e.returncode)
+        self.objectDetectionWindow = ObjectDetectionApp()
+        self.objectDetectionWindow.show()
+
+def main():
+    app = QApplication(sys.argv)
+    homePage = HomePage()
+    homePage.show()
+    sys.exit(app.exec_())
+
+if __name__ == '__main__':
+    main()
