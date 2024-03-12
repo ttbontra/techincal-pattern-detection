@@ -24,25 +24,6 @@ class HomePage(QWidget):
         # Set the application style to a sleek and modern style
         QApplication.setStyle(QStyleFactory.create("Fusion"))
 
-        # Set the color palette for dark mode
-        #dark_palette = QPalette()
-        #dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
-        #dark_palette.setColor(QPalette.WindowText, QColor(255, 255, 255))
-        #dark_palette.setColor(QPalette.Base, QColor(25, 25, 25))
-        #dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
-        #dark_palette.setColor(QPalette.ToolTipBase, QColor(255, 255, 255))
-        #dark_palette.setColor(QPalette.ToolTipText, QColor(255, 255, 255))
-        #dark_palette.setColor(QPalette.Text, QColor(255, 255, 255))
-        #dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
-        #dark_palette.setColor(QPalette.ButtonText, QColor(255, 255, 255))
-        #dark_palette.setColor(QPalette.BrightText, QColor(255, 0, 0))
-        #dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
-        #dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-        #dark_palette.setColor(QPalette.HighlightedText, QColor(0, 0, 0))
-        #QApplication.setPalette(dark_palette)
-
-        # Uncomment the following line to use the system default color palette
-        # QApplication.setPalette(QApplication.style().standardPalette())
 
     def run_object_detection(self):
         script_path = os.path.join(os.path.dirname(__file__), 'ObjectDetectionApp.py')

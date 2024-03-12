@@ -24,6 +24,7 @@ from PyQt5.QtWidgets import QSizePolicy
 
 #from strategy_loader import load_strategy_info
 
+
 class ObjectDetectionThread(QThread):
     changePixmap = pyqtSignal(QImage, list)
 

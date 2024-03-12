@@ -61,7 +61,7 @@ def main():
     dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))  # Button background
     dark_palette.setColor(QPalette.ButtonText, QColor(220, 220, 220))  # Button text
     dark_palette.setColor(QPalette.BrightText, Qt.red)  # Bright text, for highlights
-    dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))  # Links
+    dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
     
     # Highlighting colors
     dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))  # Highlight background
@@ -73,19 +73,8 @@ def main():
     app.setStyleSheet("""
         QToolTip {
             color: #ffffff; 
-            background-color: #333333; 
-            border: 1px solid #333333;
-        }
-        QPushButton {
-            background-color: #3C3C3C;
-            border: 1px solid #3C3C3C;
-            color: #ffffff;
-        }
-        QPushButton:hover {
-            background-color: #505050;
-        }
-        QPushButton:pressed {
-            background-color: #3C3C3C;
+            background-color: #2a82da; 
+            border: 1px solid white;
         }
     """)
 
