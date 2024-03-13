@@ -1,12 +1,14 @@
 # ObjectDetectionApp.py
 import sys
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel
+
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
-from PyQt5.QtWidgets import  QTreeView, QApplication, QStyleFactory
+from PyQt5.QtWidgets import  QTreeView, QStyleFactory
+from PyQt5.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QComboBox, QTextEdit, QCheckBox, QScrollArea, QVBoxLayout)
 from PyQt5.QtCore import QThread, pyqtSignal, Qt
 import cv2
 import os
+import yaml
 import numpy as np
 import mss
 import time
@@ -17,10 +19,8 @@ import streamlit as st
 import json
 from ultralytics import YOLO
 from detect_objects import detect_objects, color_map
-from PyQt5.QtWidgets import QHBoxLayout
-#from PyQt5.QtWidgets import QTreeView
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QSizePolicy
+
 
 #from strategy_loader import load_strategy_info
 
@@ -100,22 +100,6 @@ class ObjectDetectionApp(QMainWindow):
         st.sidebar.title('Pattern Summary')
         QApplication.setStyle(QStyleFactory.create("Fusion"))
 
-        # Set the color palette for dark mode
-        #dark_palette = QPalette()
-        #dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
-        #dark_palette.setColor(QPalette.WindowText, QColor(255, 255, 255))
-        #dark_palette.setColor(QPalette.Base, QColor(25, 25, 25))
-        #dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
-        #dark_palette.setColor(QPalette.ToolTipBase, QColor(255, 255, 255))
-        #dark_palette.setColor(QPalette.ToolTipText, QColor(255, 255, 255))
-        #dark_palette.setColor(QPalette.Text, QColor(255, 255, 255))
-        #dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
-        #dark_palette.setColor(QPalette.ButtonText, QColor(255, 255, 255))
-        #dark_palette.setColor(QPalette.BrightText, QColor(255, 0, 0))
-        #dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
-        #dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-        #dark_palette.setColor(QPalette.HighlightedText, QColor(0, 0, 0))
-        #QApplication.setPalette(dark_palette)
 
     def selectROI(self):
         with mss.mss() as sct:

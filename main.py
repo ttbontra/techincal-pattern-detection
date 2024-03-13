@@ -20,26 +20,6 @@ from login_window import LoginWindow
 from home_page import HomePage
 
 
-#def main():
-#    app = QApplication(sys.argv)
-#    app.setStyle('Fusion')
-
-#    login_window = LoginWindow()
-#    home_page = HomePage()
-    
-
-#    def show_home_page():
-#        login_window.hide()
-#        home_page.show()
-        
-
-#    login_window.login_successful.connect(show_home_page)
-
-#    login_window.show()
-#    sys.exit(app.exec_())
-
-#if __name__ == '__main__':
-#    main()
 
 def main():
     app = QApplication(sys.argv)
