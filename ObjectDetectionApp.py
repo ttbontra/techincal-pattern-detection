@@ -1,11 +1,11 @@
 # ObjectDetectionApp.py
 import sys
 
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
-from PyQt5.QtWidgets import  QTreeView, QStyleFactory
+from PyQt5.QtGui import QPixmap, QPalette, QTextDocument
+from PyQt5.QtGui import QStandardItemModel, QStandardItem, QPainter, QTextOption
+from PyQt5.QtWidgets import  QTreeView, QStyleFactory, QStyledItemDelegate, QStyleOptionViewItem, QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QComboBox, QTextEdit, QCheckBox, QScrollArea, QVBoxLayout
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QComboBox, QTextEdit, QCheckBox, QScrollArea, QVBoxLayout)
-from PyQt5.QtCore import QThread, pyqtSignal, Qt
+from PyQt5.QtCore import QThread, pyqtSignal, Qt, QRect
 import cv2
 import os
 import yaml
@@ -18,11 +18,9 @@ import streamlit as st
 #import torch
 import json
 from ultralytics import YOLO
-from detect_objects import detect_objects, color_map
+from detect_objects import model as detection_model, detect_objects, color_map
 from PyQt5.QtGui import QFont
 
-
-#from strategy_loader import load_strategy_info
 
 
 class ObjectDetectionThread(QThread):
@@ -127,6 +125,31 @@ class ObjectDetectionApp(QMainWindow):
          except FileNotFoundError:
              print(f"File {filename} not found.")
              return None
+         
+    def format_data_as_html(self, data):
+        html_content = ""
+
+        # Check if the top-level content is a dictionary (it should be, based on your JSON structure)
+        if isinstance(data, dict):
+            for key, value in data.items():
+                # Handle 'pattern_description' and 'day_trading_strategy' differently to structure the HTML neatly
+                if key == "pattern_description" or key == "day_trading_strategy":
+                    html_content += "<h2>{}</h2>".format(key.replace("_", " ").title())
+                    if isinstance(value, dict):
+                        for sub_key, sub_value in value.items():
+                            if isinstance(sub_value, str):
+                                html_content += "<p><b>{}</b>: {}</p>".format(sub_key.replace("_", " ").title(), sub_value)
+                            elif isinstance(sub_value, dict):
+                                # For nested dictionaries, you might want to iterate further or handle specifically
+                                for detail_key, detail_value in sub_value.items():
+                                    html_content += "<p><b>{}</b>: {}</p>".format(detail_key.replace("_", " ").title(), detail_value)
+                            # Add more handling here for other types as necessary, like lists
+                    # Add a horizontal line for visual separation between sections
+                    html_content += "<hr>"
+                # Handle other keys at the root level of your JSON structure if necessary
+                # else:
+                #     html_content += "Handle other types of data"
+        return html_content
 
     @pyqtSlot(QImage, list)
     def updateGUI(self, image, detected_objects):

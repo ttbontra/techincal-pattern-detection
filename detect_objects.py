@@ -13,6 +13,12 @@ color_map = {
     'bearflag': (255, 0, 0),
     'mini bearflag': (255, 255, 0),
     'cloudbank': (0, 255, 255),
+    'double bottom': (255, 0, 255),
+    'double top': (0, 0, 0),
+    'inverse cloudbank': (128, 128, 128),
+    'scallop': (128, 0, 0),
+    'inverse scallop': (0, 128, 0),
+
 }
 
 model_path = os.path.join('models', 'best.pt')  
