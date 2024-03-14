@@ -3,7 +3,7 @@ import sys
 
 from PyQt5.QtGui import QPixmap, QPalette, QTextDocument
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QPainter, QTextOption
-from PyQt5.QtWidgets import  QTreeView, QStyleFactory, QStyledItemDelegate, QStyleOptionViewItem, QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QComboBox, QTextEdit, QCheckBox, QScrollArea, QVBoxLayout
+from PyQt5.QtWidgets import  QTreeView, QStyleFactory, QStyledItemDelegate, QStyleOptionViewItem, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QComboBox, QTextEdit, QCheckBox, QScrollArea, QVBoxLayout, QTextBrowser
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QComboBox, QTextEdit, QCheckBox, QScrollArea, QVBoxLayout)
 from PyQt5.QtCore import QThread, pyqtSignal, Qt, QRect
 import cv2
@@ -73,31 +73,17 @@ class ObjectDetectionApp(QMainWindow):
         return model
 
     def initUI(self):
-        self.setWindowTitle("Object Detection Stream")
-        self.setGeometry(100, 100, 1000, 600)  # x, y, width, height
+        layout = QHBoxLayout()
+        self.streamLabel = QLabel("Stream Display Here")
+        self.streamLabel.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self.streamLabel, 4)
 
-        mainLayout = QVBoxLayout()
-        self.label = QLabel(self)
-        mainLayout.addWidget(self.label)
-        self.sidebar = QWidget()
-        self.sidebarLayout = QVBoxLayout()
-        sidebar_title = QLabel('Pattern Summary')
-        sidebar_title.setFont(QFont("Arial", 12, QFont.Bold))
-        self.sidebarLayout.addWidget(sidebar_title)
-        self.sidebar.setLayout(self.sidebarLayout)
-        self.sidebar.setMinimumWidth(200)  # Set a minimum width for the sidebar
-        self.sidebar.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)  # Allow the sidebar to expand or contract
+        self.sidebar = QTextBrowser()
+        layout.addWidget(self.sidebar, 1)
+
         container = QWidget()
-        container.setLayout(mainLayout)
-        hLayout = QHBoxLayout()
-        hLayout.addWidget(container)
-        hLayout.addWidget(self.sidebar)
-        centralWidget = QWidget()
-        centralWidget.setLayout(hLayout)
-        self.setCentralWidget(centralWidget)
-        st.sidebar.title('Pattern Summary')
-        QApplication.setStyle(QStyleFactory.create("Fusion"))
-
+        container.setLayout(layout)
+        self.setCentralWidget(container)
 
     def selectROI(self):
         with mss.mss() as sct:
@@ -116,47 +102,23 @@ class ObjectDetectionApp(QMainWindow):
         self.thread.changePixmap.connect(self.updateGUI)
         self.thread.start()
 
-    # Remove the redundant function definition
-    def load_strategy_info(self, pattern_name):
-         filename = os.path.join("strategy", f"{pattern_name}.json")
-         try:
-             with open(filename, 'r') as file:
-                 return json.load(file)
-         except FileNotFoundError:
-             print(f"File {filename} not found.")
-             return None
-         
-    def format_data_as_html(self, data):
-        html_content = ""
 
-        # Check if the top-level content is a dictionary (it should be, based on your JSON structure)
-        if isinstance(data, dict):
-            for key, value in data.items():
-                # Handle 'pattern_description' and 'day_trading_strategy' differently to structure the HTML neatly
-                if key == "pattern_description" or key == "day_trading_strategy":
-                    html_content += "<h2>{}</h2>".format(key.replace("_", " ").title())
-                    if isinstance(value, dict):
-                        for sub_key, sub_value in value.items():
-                            if isinstance(sub_value, str):
-                                html_content += "<p><b>{}</b>: {}</p>".format(sub_key.replace("_", " ").title(), sub_value)
-                            elif isinstance(sub_value, dict):
-                                # For nested dictionaries, you might want to iterate further or handle specifically
-                                for detail_key, detail_value in sub_value.items():
-                                    html_content += "<p><b>{}</b>: {}</p>".format(detail_key.replace("_", " ").title(), detail_value)
-                            # Add more handling here for other types as necessary, like lists
-                    # Add a horizontal line for visual separation between sections
-                    html_content += "<hr>"
-                # Handle other keys at the root level of your JSON structure if necessary
-                # else:
-                #     html_content += "Handle other types of data"
-        return html_content
+         
+    def loadHtmlContent(self, filename):
+        try:
+            with open(os.path.join('patterns', filename), 'r', encoding='utf-8') as file:
+                return file.read()
+        except FileNotFoundError:
+            print(f"File {filename} not found.")
+            return None
+
 
     @pyqtSlot(QImage, list)
     def updateGUI(self, image, detected_objects):
-        # Update the main image display
         pixmap = QPixmap.fromImage(image)
-        self.label.setPixmap(pixmap)
+        self.streamLabel.setPixmap(pixmap.scaled(self.streamLabel.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
         self.updateSidebar(detected_objects)
+
 
     @pyqtSlot(QImage)  # Adjust according to the actual signal emitted
     def setImage(self, image):
@@ -170,71 +132,17 @@ class ObjectDetectionApp(QMainWindow):
         super().closeEvent(event)
 
     def updateSidebar(self, detected_objects):
-        # Clear existing widgets from the sidebar layout
-        for i in reversed(range(self.sidebarLayout.count())): 
-            widget_to_remove = self.sidebarLayout.itemAt(i).widget()
-            if widget_to_remove is not None:  # Ensure the title label is not removed
-                self.sidebarLayout.removeWidget(widget_to_remove)
-                widget_to_remove.setParent(None)
-            self.sidebarLayout.removeWidget(widget_to_remove)
-            widget_to_remove.setParent(None)
-
-        # Create a QTreeView and QStandardItemModel
-        tree_view = QTreeView()
-        model = QStandardItemModel()
-        tree_view.setModel(model)
-        sidebar_title = QLabel('Pattern Summary')
-        sidebar_title.setFont(QFont("Arial", 12, QFont.Bold))
-        self.sidebarLayout.addWidget(sidebar_title)
-        tree_view.setHeaderHidden(True)  # Optionally hide the header for more space
-        tree_view.setWordWrap(True)  # Enable word wrapping within tree view items
-        tree_view.setColumnWidth(0, self.sidebar.width() - 20) 
-
-        # Load and display strategy information for each unique detected object
-        unique_detected_objects = set(detected_objects)
-        for object_name in unique_detected_objects:
-            strategy_info = self.load_strategy_info(object_name.replace(" ", "_").lower())
-            if strategy_info:
-                # Create a QStandardItem for the object name
-                object_item = QStandardItem(object_name)
-                object_item.setFont(QFont("Arial", 10, QFont.Bold))  # Set the font to bold
-                model.appendRow(object_item)
-
-                # Create QStandardItems for pattern name, type, entry signal, and exit target
-                pattern_name_item = QStandardItem(f"Pattern Name: {strategy_info['pattern_description']['name']}")
-                pattern_type_item = QStandardItem(f"Pattern Type: {strategy_info['pattern_description']['type']}")
-                entry_signal_item = QStandardItem(f"Entry Signal: {strategy_info['day_trading_strategy']['entry']['signal']}")
-                exit_target_item = QStandardItem(f"Exit Target: {strategy_info['day_trading_strategy']['exit']['target']}")
-
-                # Set the text wrapping mode for the items
-                pattern_name_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-                pattern_name_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-                pattern_name_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-                pattern_name_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-
-                # Set the text wrapping mode for the items
-                pattern_name_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-                pattern_type_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-                entry_signal_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-                exit_target_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-
-                # Set the text wrapping mode for the items
-                pattern_name_item.setFlags(pattern_name_item.flags() | Qt.ItemIsEditable)
-                pattern_type_item.setFlags(pattern_type_item.flags() | Qt.ItemIsEditable)
-                entry_signal_item.setFlags(entry_signal_item.flags() | Qt.ItemIsEditable)
-                exit_target_item.setFlags(exit_target_item.flags() | Qt.ItemIsEditable)
-
-                # Add the items as children of the object item
-                object_item.appendRow([pattern_name_item])
-                object_item.appendRow([pattern_type_item])
-                object_item.appendRow([entry_signal_item])
-                object_item.appendRow([exit_target_item])
-
-        # Add the tree view to the sidebar layout
-        self.sidebarLayout.addWidget(tree_view)
-
-        # Expand all items in the tree view by default
-        tree_view.expandAll()
+        # For this example, we'll just consider the first detected object
+        if detected_objects:
+            object_name = detected_objects[0]  # Assuming detected_objects is a list of object names
+            html_file_path = os.path.join("strategy", f"{object_name.replace(' ', '_').lower()}.html")
+            try:
+                with open(html_file_path, 'r', encoding='utf-8') as html_file:
+                    html_content = html_file.read()
+                    self.sidebar.setHtml(html_content)
+            except FileNotFoundError:
+                print(f"HTML file for {object_name} not found.")
+                self.sidebar.setText(f"Summary for {object_name} is not available.")
 
 def main():
     app = QApplication(sys.argv)
