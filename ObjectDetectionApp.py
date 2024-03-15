@@ -49,7 +49,7 @@ class ObjectDetectionThread(QThread):
                 h, w, ch = frame.shape
                 bytesPerLine = ch * w
                 convertToQtFormat = QImage(frame.data, w, h, bytesPerLine, QImage.Format_RGB888)
-                p = convertToQtFormat.scaled(1000, 800, Qt.KeepAspectRatio)
+                p = convertToQtFormat.scaled(1000, 800, Qt.KeepAspectRatio, Qt.SmoothTransformation)
                 self.changePixmap.emit(p, detected_objects)  # Adapt based on your PyQt slot
 
                 time.sleep(0.03)
@@ -121,14 +121,6 @@ class ObjectDetectionApp(QMainWindow):
         except FileNotFoundError:
             print(f"File {filename} not found.")
             return None
-         
-    #def loadHtmlContent(self, filename):
-    #    try:
-    #        with open(os.path.join('patterns', filename), 'r', encoding='utf-8') as file:
-    #            return file.read()
-    #    except FileNotFoundError:
-    #        print(f"File {filename} not found.")
-    #        return None
 
     @pyqtSlot(QImage, list)
     def updateGUI(self, image, detected_objects_with_colors):
@@ -142,14 +134,6 @@ class ObjectDetectionApp(QMainWindow):
         if set(current_detected_object_names) != set(self.lastDetectedObjects):
             self.updateSidebar(detected_objects_with_colors)
             self.lastDetectedObjects = current_detected_object_names
-
-
-    #@pyqtSlot(QImage, list)
-    #def updateGUI(self, image, detected_objects):
-    #    pixmap = QPixmap.fromImage(image)
-    #    self.streamLabel.setPixmap(pixmap.scaled(self.streamLabel.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
-    #    self.updateSidebar(detected_objects)
-
 
     @pyqtSlot(QImage)  # Adjust according to the actual signal emitted
     def setImage(self, image):
@@ -187,6 +171,8 @@ class ObjectDetectionApp(QMainWindow):
             except FileNotFoundError:
                 print(f"HTML file for {object_name} not found.")
                 self.sidebar.setText(f"Summary for {object_name} is not available.")
+        else:
+            self.sidebar.clear()
 
 def main():
     app = QApplication(sys.argv)
