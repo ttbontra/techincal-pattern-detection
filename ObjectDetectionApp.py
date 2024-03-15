@@ -66,6 +66,7 @@ class ObjectDetectionApp(QMainWindow):
         self.roi = None
         self.initUI()
         self.selectROI()
+        self.lastDetectedObjects = []
     
     def loadModel(self):
         model_path = os.path.join('models', 'best.pt')  
@@ -75,11 +76,22 @@ class ObjectDetectionApp(QMainWindow):
     def initUI(self):
         layout = QHBoxLayout()
         self.streamLabel = QLabel("Stream Display Here")
-        self.streamLabel.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.streamLabel, 4)
 
+        self.sidebarLayout = QVBoxLayout()  # Use a QVBoxLayout for the sidebar
+        self.sectionSelector = QComboBox()
+        self.sectionSelector.addItem("Select a section", None)  # Default option
+        # Populate the dropdown with section names
+        self.sectionSelector.addItem("Pattern Overview", "pattern_description")
+        self.sectionSelector.addItem("Trading Strategy", "day_trading_strategy")
+        self.sectionSelector.currentIndexChanged.connect(self.updateSidebarContent)  # Connect to update function
+        self.sidebarLayout.addWidget(self.sectionSelector)
+
         self.sidebar = QTextBrowser()
-        layout.addWidget(self.sidebar, 1)
+        self.sidebarLayout.addWidget(self.sidebar)
+        sidebarContainer = QWidget()
+        sidebarContainer.setLayout(self.sidebarLayout)
+        layout.addWidget(sidebarContainer, 1)
 
         container = QWidget()
         container.setLayout(layout)
@@ -102,8 +114,6 @@ class ObjectDetectionApp(QMainWindow):
         self.thread.changePixmap.connect(self.updateGUI)
         self.thread.start()
 
-
-         
     def loadHtmlContent(self, filename):
         try:
             with open(os.path.join('patterns', filename), 'r', encoding='utf-8') as file:
@@ -111,13 +121,34 @@ class ObjectDetectionApp(QMainWindow):
         except FileNotFoundError:
             print(f"File {filename} not found.")
             return None
-
+         
+    #def loadHtmlContent(self, filename):
+    #    try:
+    #        with open(os.path.join('patterns', filename), 'r', encoding='utf-8') as file:
+    #            return file.read()
+    #    except FileNotFoundError:
+    #        print(f"File {filename} not found.")
+    #        return None
 
     @pyqtSlot(QImage, list)
-    def updateGUI(self, image, detected_objects):
+    def updateGUI(self, image, detected_objects_with_colors):
         pixmap = QPixmap.fromImage(image)
         self.streamLabel.setPixmap(pixmap.scaled(self.streamLabel.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
-        self.updateSidebar(detected_objects)
+        
+        # Extract just the object names for comparison
+        current_detected_object_names = [obj[0] for obj in detected_objects_with_colors]
+        
+        # Check if the detected objects have changed from the last update
+        if set(current_detected_object_names) != set(self.lastDetectedObjects):
+            self.updateSidebar(detected_objects_with_colors)
+            self.lastDetectedObjects = current_detected_object_names
+
+
+    #@pyqtSlot(QImage, list)
+    #def updateGUI(self, image, detected_objects):
+    #    pixmap = QPixmap.fromImage(image)
+    #    self.streamLabel.setPixmap(pixmap.scaled(self.streamLabel.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
+    #    self.updateSidebar(detected_objects)
 
 
     @pyqtSlot(QImage)  # Adjust according to the actual signal emitted
@@ -130,6 +161,19 @@ class ObjectDetectionApp(QMainWindow):
         self.thread.stop()
         self.thread.wait()
         super().closeEvent(event)
+
+    def updateSidebarContent(self, index):
+        # Get the selected section name
+        section_name = self.sectionSelector.currentData()
+        if section_name:
+            html_file_path = os.path.join("patterns", f"{section_name}.html")
+            try:
+                with open(html_file_path, 'r', encoding='utf-8') as html_file:
+                    html_content = html_file.read()
+                    self.sidebar.setHtml(html_content)
+            except FileNotFoundError:
+                print(f"HTML file for {section_name} not found.")
+                self.sidebar.setText(f"Content for {section_name} is not available.")
 
     def updateSidebar(self, detected_objects):
         # For this example, we'll just consider the first detected object
