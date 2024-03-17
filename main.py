@@ -21,6 +21,7 @@ from home_page import HomePage
 
 
 
+
 def main():
     app = QApplication(sys.argv)
     app.setStyle('Fusion')

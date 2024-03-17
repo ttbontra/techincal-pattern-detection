@@ -53,7 +53,7 @@ class LoginWindow(QWidget):
             QPushButton {
                 width: 120px; height: 40px; 
                 font-size: 16px; 
-                background-color: navy; 
+                background-color: #197422; 
                 color: white;
                 border-radius: 5px;
             }
