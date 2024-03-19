@@ -8,28 +8,43 @@
 
 # Train/val/test sets as 1) dir: path/to/imgs, 2) file: path/to/imgs.txt, or 3) list: [path/to/imgs1, path/to/imgs2, ..]
 path: C:/Users/ttbon/Documents/object_detection/train_data # dataset root dir
-train: ../train_data/images/train/ # train images (relative to 'path') 128 images
-val: ../train_data/images/val/ # val images (relative to 'path') 128 images
+train: images/train/ # train images (relative to 'path') 128 images
+val: images/val/ # val images (relative to 'path') 128 images
 test: # test images (optional)
 
 # Classes
-names:
-  0: consolidation
-  1: bullflag
-  2: mini bullflag
-  3: cup and handle
-  4: bearflag
-  5: mini bearflag
-  6: cloudbank
-  7: inverse cloudbank
-  8: double top
-  9: double bottom
-  10: scallop
-  11: inverted scallop
+#names:
+#  0: consolidation
+#  1: bullflag
+#  2: mini bullflag
+#  3: cup and handle
+#  4: bearflag
+#  5: mini bearflag
+#  6: cloudbank
+#  7: inverse cloudbank
+#  8: double top
+#  9: double bottom
+#  10: scallop
+#  11: inverted scallop
   #12: head and shoulders
   #13: inverse head and shoulders
   #14: triple top
   #15: triple bottom
+
+
+names:
+  0: cloudbank
+  1: mini bullflag
+  2: bullflag
+  3: inverted scallop
+  4: double top
+  5: scallop
+  6: cup and handle
+  7: inverse cloudbank
+  8: bearflag
+  9: mini bearflag
+  10: double bottom
+  11: consolidation
 
 
   
@@ -42,18 +57,36 @@ augmentation:
   mixup: 0.2 
 
 class_weights:
-  0: 1.00
-  1: 3.41
-  2: 2.61
-  3: 10.43
-  4: 9.19
-  5: 7.79
-  6: 12.61
-  7: 27.02
-  8: 37.83
-  9: 50.92
-  10: 21.02
-  11: 57.57
+  0: 10.26 #1.00 consolidation
+  1: 1.98 #2.60 #bullflag
+  2: 2.66 #1.98 #mini bullflag
+  3: 22.44 #7.79 #cup and handle
+  4: 22.44 #6.13 #bearflag
+  5: 7.98 #5.61 #mini bearflag
+  6: 7.79 #10.26 #cloudbank
+  7: 18.65 #inverse cloudbank
+  8: 6.13 #22.44 #double top
+  9: 5.61 #31.52 #double bottom
+  10: 31.51 #7.98 #scallop
+  11: 1.00 #22.44 #inverted scallop
+  #12: 2.5
+  #13: 2.5
+  #14: 0.533211
+  #15: 5.598715
+
+#class_weights:
+#  0: 1.00 #consolidation
+#  1: 2.60 #bullflag
+#  2: 1.98 #mini bullflag
+#  3: 7.79 #cup and handle
+#  4: 6.13 #bearflag
+#  5: 5.61 #mini bearflag
+#  6: 10.26 #cloudbank
+#  7: 18.65 #inverse cloudbank
+#  8: 22.44 #double top
+#  9: 31.52 #double bottom
+#  10: 7.98 #scallop
+#  11: 22.44 #inverted scallop
   #12: 2.5
   #13: 2.5
   #14: 0.533211

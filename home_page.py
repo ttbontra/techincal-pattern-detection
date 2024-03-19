@@ -60,6 +60,12 @@ class HomePage(QWidget):
         object_detect_button = QPushButton('Run Object Detection', self)
         object_detect_button.clicked.connect(self.run_object_detection)
         # Adjust the button size and policy
+        object_detect_button.setStyleSheet("""
+            QPushButton {
+                font-size: 16px; 
+                background-color: #197422; 
+            }
+        """)
         object_detect_button.setMinimumSize(250, 20)  # width, height
         object_detect_button.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Expanding)
 
