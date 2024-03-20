@@ -1,0 +1,28 @@
+{
+    "pattern_description": {
+      "name": "Cloudbank Pattern",
+      "type": "Reversal Pattern",
+      "appearance": "The Cloudbank pattern is characterized by a dense cluster of small, indecisive candles (resembling a cloud), followed by a decisive, large candle (the breakout candle) that indicates a clear direction. The pattern occurs after a trend or period of significant price movement, signifying potential exhaustion and a possible reversal.",
+      "significance": "This pattern suggests that after a period of consolidation or indecision (the cloud), the market has chosen a direction, indicating a potential reversal of the previous trend. The breakout candle is key to confirming the new direction."
+    },
+    "day_trading_strategy": {
+      "entry": {
+        "signal": "Enter a trade in the direction of the breakout candle once the price moves beyond its high (for a bullish breakout) or below its low (for a bearish breakout) with significant volume.",
+        "confirmation": "A second candle closing in the direction of the breakout can serve as additional confirmation to mitigate the risk of a false breakout."
+      },
+      "exit": {
+        "target": "Set a profit target based on significant resistance (for a bullish breakout) or support levels (for a bearish breakout) identified prior to the pattern formation. Another method is to project the height of the cloud (the range of the consolidation) from the breakout point.",
+        "stop_loss": "Place a stop loss just inside the range of the cloud opposite the breakout direction to minimize potential losses if the breakout fails."
+      },
+      "risk_management": {
+        "position_size": "Calculate the position size by taking into account the distance from the entry point to the stop loss, ensuring the risk does not exceed 1-2% of the trading capital.",
+        "profit_booking": "Consider scaling out of the position by taking partial profits at various targets and using a trailing stop loss to capture as much of the breakout momentum as possible."
+      },
+      "considerations": {
+        "volume": "Volume is a crucial confirmation factor; an increase in volume on the breakout lends credibility to the pattern and the likelihood of its success.",
+        "market_conditions": "The Cloudbank pattern's effectiveness can be influenced by the prevailing market conditions. It's beneficial to align this pattern with broader market sentiment.",
+        "technical_indicators": "Complementary technical indicators, such as RSI or MACD, can provide additional confirmation of the breakout's strength and potential for continuation."
+      }
+    }
+  }
+  
