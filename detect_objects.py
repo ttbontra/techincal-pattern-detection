@@ -37,4 +37,3 @@ def detect_objects(model, img, color_map):
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
         return img, detected_objects
 
-

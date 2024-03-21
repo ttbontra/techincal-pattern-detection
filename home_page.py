@@ -1,93 +1,115 @@
 # home_page.py
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QSpacerItem, QSizePolicy, QHBoxLayout
-
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QSpacerItem, QSizePolicy, QHBoxLayout, QLabel
+from PyQt5.QtWidgets import QCheckBox, QFrame
+from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout, QFrame, QScrollArea, 
+                             QPushButton, QSpacerItem, QSizePolicy, QCheckBox, QLabel)
 from PyQt5.QtCore import Qt
 import os
 import sys
-
+from PyQt5.QtCore import QSize
+from PyQt5.QtGui import QIcon, QFont, QColor, QPalette
 #from PyQt5.QtGui import QPalette, QColor
 from ObjectDetectionApp import ObjectDetectionApp
+from PyQt5.QtWidgets import QCheckBox
 
+color_map = {
+    'consolidation': (0, 255, 0),
+    'bullflag': (255, 105, 180),
+    'mini bullflag': (0, 0, 255),
+    'cup and handle': (255, 255, 255),
+    'bearflag': (255, 0, 0),
+    'mini bearflag': (255, 255, 0),
+    'cloudbank': (0, 255, 255),
+    'double bottom': (255, 0, 255),
+    'double top': (0, 0, 0),
+    'inverse cloudbank': (128, 128, 128),
+    'scallop': (128, 0, 0),
+    'inverse scallop': (0, 128, 0),
 
-#def initUI(self):
-        # Main layout is horizontal: sidebar | main content
-    #    mainLayout = QHBoxLayout(self)
-
-        # Create a splitter for resizable sidebar
-    #    splitter = QSplitter(Qt.Horizontal)
-    #    mainLayout.addWidget(splitter)
-
-        # Sidebar content
-    #    self.sidebar = QListWidget()
-    #    self.sidebar.addItem("Setting 1")
-    #    self.sidebar.addItem("Setting 2")
-    #    self.sidebar.addItem("Setting 3")
-    #    splitter.addWidget(self.sidebar)
-
-        # Main content area
-    #    self.mainContent = QFrame(self)
-    #    self.mainContent.setFrameShape(QFrame.StyledPanel)
-    #    self.mainContentLayout = QVBoxLayout()
-
-    #    object_detect_button = QPushButton('Run Object Detection', self)
-    #    object_detect_button.clicked.connect(self.run_object_detection)
-    #    self.mainContentLayout.addWidget(object_detect_button)
-
-    #    self.mainContent.setLayout(self.mainContentLayout)
-    #    splitter.addWidget(self.mainContent)
-
-        # Adjust splitter sizes to make the sidebar initially smaller
-    #    splitter.setSizes([200, 600])
-
-    #    QApplication.setStyle(QStyleFactory.create("Fusion"))
+}
 
 class HomePage(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Home Page')
         self.setGeometry(100, 100, 800, 600)
+        self.sidebarVisible = True
         self.initUI()
 
     def initUI(self):
         
-        main_layout = QVBoxLayout()  # The main layout
+        self.mainLayout = QHBoxLayout(self)  # This is the primary layout of the window.
 
-        # Create horizontal layout with spacers to center the button horizontally
-        h_layout = QHBoxLayout()
-        spacer_left = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-        spacer_right = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        # Sidebar setup
+        self.sidebarFrame = QFrame()
+        self.sidebarFrame.setFixedWidth(200)
+        self.sidebarFrame.setStyleSheet("background-color: #1E1E1E;")
+        self.sidebarLayout = QVBoxLayout(self.sidebarFrame)
 
-        object_detect_button = QPushButton('Run Object Detection', self)
-        object_detect_button.clicked.connect(self.run_object_detection)
-        # Adjust the button size and policy
-        object_detect_button.setStyleSheet("""
-            QPushButton {
-                font-size: 16px; 
-                background-color: #197422; 
-            }
-        """)
-        object_detect_button.setMinimumSize(250, 20)  # width, height
-        object_detect_button.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Expanding)
+        # Adding a title to the sidebar
+        title = QLabel("Detectable Patterns")
+        title.setFont(QFont("Arial", 14))
+        title.setStyleSheet("color: white; margin: 10px 0;")
+        self.sidebarLayout.addWidget(title)
 
-        # Add widgets and spacers to the horizontal layout
-        h_layout.addItem(spacer_left)
-        h_layout.addWidget(object_detect_button)
-        h_layout.addItem(spacer_right)
+        # Creating a scroll area for checkboxes to manage space effectively.
+        self.scrollArea = QScrollArea()
+        self.scrollWidget = QWidget()
+        self.scrollLayout = QVBoxLayout(self.scrollWidget)
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollArea.setWidget(self.scrollWidget)
 
-        # Spacers to push the layout containing the button to the middle vertically
-        spacer_top = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-        spacer_bottom = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.addCheckboxes()
 
-        # Add the top spacer, the horizontal layout, and the bottom spacer to the main layout
-        main_layout.addItem(spacer_top)
-        main_layout.addLayout(h_layout)
-        main_layout.addItem(spacer_bottom)
+        self.sidebarLayout.addWidget(self.scrollArea)
 
-        self.setLayout(main_layout)
+        # Toggle Sidebar Button setup
+        self.toggleSidebarButton = QPushButton()
+        self.toggleSidebarButton.setIcon(QIcon(os.path.join(os.path.dirname(__file__), 'left.svg')))
+        self.toggleSidebarButton.clicked.connect(self.toggleSidebar)
+        self.toggleSidebarButton.setFixedSize(QSize(40, 40))  # Adjust size as needed
+        self.toggleSidebarButton.setStyleSheet("QPushButton { border: none; }")
+
+        # Button to run object detection
+        objectDetectButton = QPushButton('Run Object Detection')
+        objectDetectButton.clicked.connect(self.run_object_detection)
+        objectDetectButton.setStyleSheet("font-size: 16px; background-color: #197422; color: white;")
+        objectDetectButton.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+
+        # Adding sidebar and content to the main layout
+        self.mainLayout.addWidget(self.sidebarFrame)
+        self.mainLayout.addWidget(self.toggleSidebarButton, 0, Qt.AlignTop)  # Ensure the button aligns to the top
+        self.mainLayout.addWidget(objectDetectButton)
 
         # Set the application style
         QApplication.setStyle("Fusion")
 
+    def addCheckboxes(self):
+        options = [
+            'consolidation', 'bullflag', 'mini bullflag', 'cup and handle',
+            'bearflag', 'mini bearflag', 'cloudbank', 'double bottom',
+            'double top', 'inverse cloudbank', 'scallop', 'inverse scallop'
+        ]
+        for option in options:
+            checkBox = QCheckBox(option)
+            checkBox.setStyleSheet("QCheckBox { color: white; }")
+            checkBox.setChecked(True)
+            checkBox.setEnabled(True)
+            self.scrollLayout.addWidget(checkBox)
+
+
+    def toggleSidebar(self):
+        self.sidebarVisible = not self.sidebarVisible
+        self.sidebarFrame.setVisible(self.sidebarVisible)
+        iconPath = 'left.svg' if self.sidebarVisible else 'right.svg'
+        self.toggleSidebarButton.setIcon(QIcon(os.path.join(os.path.dirname(__file__), iconPath)))
+
+
+    def resizeEvent(self, event):
+        super(HomePage, self).resizeEvent(event)
+        # Ensure the toggle button is always centered vertically
+        buttonX = 0 if not self.sidebarVisible else 200
+        self.toggleSidebarButton.move(buttonX, self.height() // 2 - 20)
 
     def run_object_detection(self):
         # Make sure ObjectDetectionApp is defined elsewhere in your code

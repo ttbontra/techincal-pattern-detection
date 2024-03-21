@@ -21,7 +21,7 @@ from ultralytics import YOLO
 from detect_objects import model as detection_model, detect_objects, color_map
 from PyQt5.QtGui import QFont
 
-
+DETECTABLE_OBJECTS = ["bullflag", "mini bullflag", "consolidation", "bearflag", "mini bearflag", "cloudbank", "double bottom", "double top", "inverse cloudbank", "scallop", "inverse scallop"]
 
 class ObjectDetectionThread(QThread):
     changePixmap = pyqtSignal(QImage, list)
@@ -32,7 +32,10 @@ class ObjectDetectionThread(QThread):
         self.model = model
         self.color_map = color_map
         self.running = True
-       
+
+    @pyqtSlot(list)
+    def updateSelectedObjects(self, selected_objects):
+        self.selected_objects = selected_objects
         
     def run(self):
         with mss.mss() as sct:
@@ -96,6 +99,22 @@ class ObjectDetectionApp(QMainWindow):
         container = QWidget()
         container.setLayout(layout)
         self.setCentralWidget(container)
+
+    def objectSelectionChanged(self, index):
+    # Retrieve the current text of the combo box, which represents the selected object
+        selected_object = self.objectSelector.currentText()
+
+    # If "All" is selected, consider all objects; otherwise, create a list with the selected object
+        if selected_object == "All":
+            self.selected_objects = DETECTABLE_OBJECTS  # Assuming DETECTABLE_OBJECTS is a list of all possible objects
+        else:
+            self.selected_objects = [selected_object]
+
+    # Emit the signal to update the object detection thread with the new selection
+        self.updateSelectedObjects.emit(self.selected_objects)
+
+    def getSelectedObject(self):
+        return self.objectSelector.currentText()
 
     def selectROI(self):
         with mss.mss() as sct:
