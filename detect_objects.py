@@ -6,18 +6,18 @@ from ultralytics import YOLO
 import os
 
 color_map = {
-    'consolidation': (0, 255, 0), # Green
+    'consolidation': (100, 255, 100), # Green
     'bullflag': (255, 105, 180), # purple
-    'mini bullflag': (255, 0, 255), # Magenta
+    'mini bullflag': (255, 100, 255), # Magenta
     'cup and handle': (255, 255, 255), # White
     'bearflag': (255, 100, 100), # Blue
-    'mini bearflag': (255, 255, 0), # Yellow
+    'mini bearflag': (255, 255, 100), # Yellow
     'cloudbank': (0, 255, 255), # Cyan
-    'double bottom': (0, 0, 255), # Magenta
-    'double top': (0, 0, 255), # White
+    'double bottom': (100, 100, 255), # Magenta
+    'double top': (100, 100, 255), # White
     'inverse cloudbank': (128, 128, 128), # Gray
-    'scallop': (128, 0, 0), # Maroon
-    'inverse scallop': (0, 128, 0), # Green
+    'scallop': (128, 50, 50), # Maroon
+    'inverse scallop': (50, 128, 50), # Green
 }
 
 model_path = os.path.join('models', 'best.pt')  
