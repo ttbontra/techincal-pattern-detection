@@ -49,7 +49,7 @@ class ObjectDetectionThread(QThread):
                 h, w, ch = frame.shape
                 bytesPerLine = ch * w
                 convertToQtFormat = QImage(frame.data, w, h, bytesPerLine, QImage.Format_RGB888)
-                p = convertToQtFormat.scaled(1000, 800, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                p = convertToQtFormat.scaled(1000, 900, Qt.KeepAspectRatio, Qt.SmoothTransformation)
                 self.changePixmap.emit(p, detected_objects)  # Adapt based on your PyQt slot
 
                 time.sleep(0.03)
@@ -62,7 +62,7 @@ class ObjectDetectionApp(QMainWindow):
         super().__init__()
         self.model = self.loadModel()
         self.setWindowTitle("Object Detection Stream")
-        self.setGeometry(100, 100, 1200, 600)  # x, y, width, height
+        self.setGeometry(100, 100, 1200, 900)  # x, y, width, height
         self.roi = None
         self.initUI()
         self.selectROI()
