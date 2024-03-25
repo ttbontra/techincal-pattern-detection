@@ -62,7 +62,7 @@ class ObjectDetectionApp(QMainWindow):
         super().__init__()
         self.model = self.loadModel()
         self.setWindowTitle("Object Detection Stream")
-        self.setGeometry(100, 100, 1000, 600)  # x, y, width, height
+        self.setGeometry(100, 100, 1200, 600)  # x, y, width, height
         self.roi = None
         self.initUI()
         self.selectROI()
@@ -91,7 +91,7 @@ class ObjectDetectionApp(QMainWindow):
         self.sidebarLayout.addWidget(self.sidebar)
         sidebarContainer = QWidget()
         sidebarContainer.setLayout(self.sidebarLayout)
-        layout.addWidget(sidebarContainer, 1)
+        layout.addWidget(sidebarContainer, 2)
 
         container = QWidget()
         container.setLayout(layout)

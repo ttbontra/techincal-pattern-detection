@@ -2,7 +2,8 @@ import mysql.connector
 from PyQt5.QtWidgets import QWidget, QPushButton, QLineEdit, QVBoxLayout, QMessageBox
 from PyQt5.QtCore import pyqtSignal, QUrl
 from PyQt5.QtWidgets import QSpacerItem, QSizePolicy
-
+from PyQt5.QtSvg import QSvgWidget
+from PyQt5.QtCore import QSize
 from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
 import json
 
@@ -26,6 +27,11 @@ class LoginWindow(QWidget):
         layout = QVBoxLayout()
         top_spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         layout.addItem(top_spacer)
+
+        # SVG Logo
+        self.logo = QSvgWidget("greenlogo.svg")  # Specify the path to your SVG file
+        self.logo.setFixedSize(QSize(100, 100))  # Adjust size as needed
+        layout.addWidget(self.logo, 0, Qt.AlignCenter)
 
         self.username = QLineEdit(self)
         self.username.setPlaceholderText('Username')

@@ -12,21 +12,7 @@ from PyQt5.QtGui import QIcon, QFont, QColor, QPalette
 from ObjectDetectionApp import ObjectDetectionApp
 from PyQt5.QtWidgets import QCheckBox
 
-color_map = {
-    'consolidation': (0, 255, 0),
-    'bullflag': (255, 105, 180),
-    'mini bullflag': (0, 0, 255),
-    'cup and handle': (255, 255, 255),
-    'bearflag': (255, 0, 0),
-    'mini bearflag': (255, 255, 0),
-    'cloudbank': (0, 255, 255),
-    'double bottom': (255, 0, 255),
-    'double top': (0, 0, 0),
-    'inverse cloudbank': (128, 128, 128),
-    'scallop': (128, 0, 0),
-    'inverse scallop': (0, 128, 0),
 
-}
 
 
 class HomePage(QWidget):
@@ -43,6 +29,7 @@ class HomePage(QWidget):
     def initUI(self):
         
         self.mainLayout = QHBoxLayout(self)  # This is the primary layout of the window.
+        
 
         self.sidebarFrame = QFrame()
         self.sidebarFrame.setFixedWidth(200)
