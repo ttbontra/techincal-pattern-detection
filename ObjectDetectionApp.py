@@ -19,6 +19,7 @@ import streamlit as st
 import json
 from ultralytics import YOLO
 from detect_objects import model as detection_model, detect_objects, color_map
+#from home_page import selected_objects
 from PyQt5.QtGui import QFont
 
 DETECTABLE_OBJECTS = ["bullflag", "mini bullflag", "consolidation", "bearflag", "mini bearflag", "cloudbank", "double bottom", "double top", "inverse cloudbank", "scallop", "inverse scallop"]
@@ -33,10 +34,6 @@ class ObjectDetectionThread(QThread):
         self.color_map = color_map
         self.running = True
 
-    @pyqtSlot(list)
-    def updateSelectedObjects(self, selected_objects):
-        self.selected_objects = selected_objects
-        
     def run(self):
         with mss.mss() as sct:
             while self.running:

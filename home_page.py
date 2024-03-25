@@ -28,47 +28,56 @@ color_map = {
 
 }
 
+
 class HomePage(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Home Page')
         self.setGeometry(100, 100, 800, 600)
         self.sidebarVisible = True
+        self.checkboxes = [] 
+        #self.addCheckboxes()
         self.initUI()
+        self.addCheckboxes()
 
     def initUI(self):
         
         self.mainLayout = QHBoxLayout(self)  # This is the primary layout of the window.
 
-        # Sidebar setup
         self.sidebarFrame = QFrame()
         self.sidebarFrame.setFixedWidth(200)
         self.sidebarFrame.setStyleSheet("background-color: #1E1E1E;")
-        self.sidebarLayout = QVBoxLayout(self.sidebarFrame)
-
-        # Adding a title to the sidebar
+        self.sidebarLayout = QVBoxLayout()
+        
         title = QLabel("Detectable Patterns")
         title.setFont(QFont("Arial", 14))
         title.setStyleSheet("color: white; margin: 10px 0;")
         self.sidebarLayout.addWidget(title)
-
-        # Creating a scroll area for checkboxes to manage space effectively.
+        
         self.scrollArea = QScrollArea()
         self.scrollWidget = QWidget()
-        self.scrollLayout = QVBoxLayout(self.scrollWidget)
+        self.scrollLayout = QVBoxLayout()
+        self.scrollWidget.setLayout(self.scrollLayout)
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setWidget(self.scrollWidget)
+        self.sidebarLayout.addWidget(self.scrollArea)
+        
+        self.sidebarFrame.setLayout(self.sidebarLayout)
+        self.mainLayout.addWidget(self.sidebarFrame)
+        self.setLayout(self.mainLayout)
 
         self.addCheckboxes()
 
-        self.sidebarLayout.addWidget(self.scrollArea)
+        #self.sidebarLayout.addWidget(self.sidebarFrame)
 
         # Toggle Sidebar Button setup
         self.toggleSidebarButton = QPushButton()
         self.toggleSidebarButton.setIcon(QIcon(os.path.join(os.path.dirname(__file__), 'left.svg')))
         self.toggleSidebarButton.clicked.connect(self.toggleSidebar)
-        self.toggleSidebarButton.setFixedSize(QSize(40, 40))  # Adjust size as needed
+        self.toggleSidebarButton.setFixedSize(QSize(40, 40))
         self.toggleSidebarButton.setStyleSheet("QPushButton { border: none; }")
+        self.mainLayout.addWidget(self.sidebarFrame)
+        self.mainLayout.addWidget(self.toggleSidebarButton)
 
         # Button to run object detection
         objectDetectButton = QPushButton('Run Object Detection')
@@ -83,8 +92,10 @@ class HomePage(QWidget):
 
         # Set the application style
         QApplication.setStyle("Fusion")
+        self.setLayout(self.mainLayout)
 
     def addCheckboxes(self):
+        self.checkboxes = []
         options = [
             'consolidation', 'bullflag', 'mini bullflag', 'cup and handle',
             'bearflag', 'mini bearflag', 'cloudbank', 'double bottom',
@@ -93,9 +104,10 @@ class HomePage(QWidget):
         for option in options:
             checkBox = QCheckBox(option)
             checkBox.setStyleSheet("QCheckBox { color: white; }")
-            checkBox.setChecked(True)
-            checkBox.setEnabled(True)
+            checkBox.setChecked(True)  # Default to checked
+            self.checkboxes.append(checkBox)  # Keep track of the checkboxes
             self.scrollLayout.addWidget(checkBox)
+
 
 
     def toggleSidebar(self):
@@ -115,6 +127,18 @@ class HomePage(QWidget):
         # Make sure ObjectDetectionApp is defined elsewhere in your code
         self.objectDetectionWindow = ObjectDetectionApp()
         self.objectDetectionWindow.show()
+
+    def getSelectedObjectTypes(self):
+        selected_types = []
+        for checkbox in self.findChildren(QCheckBox):  # Assuming checkboxes are direct children
+            if checkbox.isChecked():
+                selected_types.append(checkbox.text())
+        return selected_types
+
+    #def run_object_detection(self):
+    #    # Make sure ObjectDetectionApp is defined elsewhere in your code
+    #    self.objectDetectionWindow = ObjectDetectionApp()
+    #    self.objectDetectionWindow.show()
 
 def main():
     app = QApplication(sys.argv)
