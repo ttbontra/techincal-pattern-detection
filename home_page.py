@@ -21,26 +21,21 @@ class HomePage(QWidget):
         self.setWindowTitle('Home Page')
         self.setGeometry(100, 100, 800, 600)
         self.sidebarVisible = True
-        self.checkboxes = [] 
-        #self.addCheckboxes()
         self.initUI()
-        self.addCheckboxes()
 
     def initUI(self):
-        
-        self.mainLayout = QHBoxLayout(self)  # This is the primary layout of the window.
-        
+        self.mainLayout = QHBoxLayout(self)
 
         self.sidebarFrame = QFrame()
         self.sidebarFrame.setFixedWidth(200)
         self.sidebarFrame.setStyleSheet("background-color: #1E1E1E;")
         self.sidebarLayout = QVBoxLayout()
-        
+
         title = QLabel("Detectable Patterns")
         title.setFont(QFont("Arial", 14))
         title.setStyleSheet("color: white; margin: 10px 0;")
         self.sidebarLayout.addWidget(title)
-        
+
         self.scrollArea = QScrollArea()
         self.scrollWidget = QWidget()
         self.scrollLayout = QVBoxLayout()
@@ -48,38 +43,38 @@ class HomePage(QWidget):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setWidget(self.scrollWidget)
         self.sidebarLayout.addWidget(self.scrollArea)
-        
+
         self.sidebarFrame.setLayout(self.sidebarLayout)
         self.mainLayout.addWidget(self.sidebarFrame)
-        self.setLayout(self.mainLayout)
 
-        self.addCheckboxes()
+        self.addPatternLabels()
 
-        #self.sidebarLayout.addWidget(self.sidebarFrame)
-
-        # Toggle Sidebar Button setup
         self.toggleSidebarButton = QPushButton()
         self.toggleSidebarButton.setIcon(QIcon(os.path.join(os.path.dirname(__file__), 'left.svg')))
         self.toggleSidebarButton.clicked.connect(self.toggleSidebar)
         self.toggleSidebarButton.setFixedSize(QSize(40, 40))
         self.toggleSidebarButton.setStyleSheet("QPushButton { border: none; }")
-        self.mainLayout.addWidget(self.sidebarFrame)
-        self.mainLayout.addWidget(self.toggleSidebarButton)
+        self.mainLayout.addWidget(self.toggleSidebarButton, 0, Qt.AlignTop)
 
-        # Button to run object detection
         objectDetectButton = QPushButton('Run Object Detection')
         objectDetectButton.clicked.connect(self.run_object_detection)
         objectDetectButton.setStyleSheet("font-size: 16px; background-color: #197422; color: white;")
         objectDetectButton.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-
-        # Adding sidebar and content to the main layout
-        self.mainLayout.addWidget(self.sidebarFrame)
-        self.mainLayout.addWidget(self.toggleSidebarButton, 0, Qt.AlignTop)  # Ensure the button aligns to the top
         self.mainLayout.addWidget(objectDetectButton)
 
-        # Set the application style
         QApplication.setStyle("Fusion")
         self.setLayout(self.mainLayout)
+
+    def addPatternLabels(self):
+        patterns = [
+            'consolidation', 'bullflag', 'mini bullflag', 'cup and handle',
+            'bearflag', 'mini bearflag', 'cloudbank', 'double bottom',
+            'double top', 'inverse cloudbank', 'scallop', 'inverse scallop'
+        ]
+        for pattern in patterns:
+            label = QLabel(pattern)
+            label.setStyleSheet("QLabel { color: white; }")
+            self.scrollLayout.addWidget(label)
 
     def addCheckboxes(self):
         self.checkboxes = []

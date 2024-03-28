@@ -78,20 +78,8 @@ class ObjectDetectionApp(QMainWindow):
         self.streamLabel = QLabel("Stream Display Here")
         layout.addWidget(self.streamLabel, 4)
 
-        self.sidebarLayout = QVBoxLayout()  # Use a QVBoxLayout for the sidebar
-        self.sectionSelector = QComboBox()
-        self.sectionSelector.addItem("Select a section", None)  # Default option
-        # Populate the dropdown with section names
-        self.sectionSelector.addItem("Pattern Overview", "pattern_description")
-        self.sectionSelector.addItem("Trading Strategy", "day_trading_strategy")
-        self.sectionSelector.currentIndexChanged.connect(self.updateSidebarContent)  # Connect to update function
-        self.sidebarLayout.addWidget(self.sectionSelector)
-
         self.sidebar = QTextBrowser()
-        self.sidebarLayout.addWidget(self.sidebar)
-        sidebarContainer = QWidget()
-        sidebarContainer.setLayout(self.sidebarLayout)
-        layout.addWidget(sidebarContainer, 2)
+        layout.addWidget(self.sidebar, 2)
 
         container = QWidget()
         container.setLayout(layout)
